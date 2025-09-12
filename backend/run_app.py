@@ -7,6 +7,7 @@ import os
 import sys
 import uvicorn
 import logging
+import platform
 from dotenv import load_dotenv
 
 # Load environment variables
@@ -31,17 +32,20 @@ def main():
         print("GOOGLE_AI_API_KEY=your_google_ai_api_key_here")
         sys.exit(1)
     
+    # Choose port: macOS (Darwin) users use 5050, others use 5000
+    port = 5050 if platform.system() == "Darwin" else 5000
+
     print("🚀 Starting LIT Legal Mind Backend API...")
     print(f"📍 API Key configured: {'*' * (len(api_key) - 4) + api_key[-4:] if len(api_key) > 4 else '***'}")
-    print("🌐 Server will be available at: http://localhost:5000")
-    print("📚 API Documentation: http://localhost:5000/docs")
-    
+    print(f"🌐 Server will be available at: http://localhost:{port}")
+    print(f"📚 API Documentation: http://localhost:{port}/docs")
+
     # Run the server
     try:
         uvicorn.run(
             "app:app",
             host="0.0.0.0",
-            port=5000,  # Changed to 5000
+            port=port,
             reload=True,
             log_level="info",
             access_log=True

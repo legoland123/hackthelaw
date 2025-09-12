@@ -2,7 +2,23 @@
  * Chat Service - Handles communication with LIT Legal Mind backend
  */
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5050';
+// Default localhost port: macOS clients use 5050, other OSes use 5000
+const getDefaultLocalhostPort = () => {
+    try {
+        if (typeof navigator !== 'undefined' && navigator.platform) {
+            // navigator.platform examples: 'MacIntel', 'MacPPC', 'Win32', 'Linux x86_64'
+            if (/Mac|iPhone|iPad|iPod/.test(navigator.platform)) {
+                return 5050;
+            }
+        }
+    } catch (e) {
+        // ignore and fall back
+    }
+    return 5000;
+};
+
+const DEFAULT_PORT = getDefaultLocalhostPort();
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || `http://localhost:${DEFAULT_PORT}`;
 
 class ChatService {
     constructor() {
