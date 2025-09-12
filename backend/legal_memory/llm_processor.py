@@ -1,51 +1,39 @@
 """
-LLM Processor - Process HTML content with Gemini to extract structured legal data
+LLM Processor - Process HTML content with Groq to extract structured legal data
 """
 
 import json
 import logging
 import asyncio
 from typing import Dict, List, Optional
-import google.generativeai as genai
-from google.generativeai.types import HarmCategory, HarmBlockThreshold
+from groq import Groq
 import os
 
 logger = logging.getLogger(__name__)
 
 class LLMProcessor:
-    """Process legal HTML content with Google Gemini"""
+    """Process legal HTML content with Groq"""
     
     def __init__(self, api_key: Optional[str] = None):
         """
         Initialize LLM processor
         
         Args:
-            api_key: Google AI API key (optional, will try environment variable)
+            api_key: Groq API key (optional, will try environment variable)
         """
-        self.api_key = api_key or os.getenv('GOOGLE_AI_API_KEY')
+        self.api_key = api_key or os.getenv('GROQ_API_KEY')
         if not self.api_key:
-            raise ValueError("Google AI API key is required. Set GOOGLE_AI_API_KEY environment variable or pass api_key parameter.")
+            raise ValueError("Groq API key is required. Set GROQ_API_KEY environment variable or pass api_key parameter.")
         
-        genai.configure(api_key=self.api_key)
+        # Initialize Groq client
+        self.client = Groq(api_key=self.api_key)
         
-        # Configure the model
-        self.model = genai.GenerativeModel(
-            model_name="gemini-1.5-flash",
-            generation_config={
-                "temperature": 0.1,
-                "top_p": 0.8,
-                "top_k": 40,
-                "max_output_tokens": 8192,
-            },
-            safety_settings={
-                HarmCategory.HARM_CATEGORY_HARASSMENT: HarmBlockThreshold.BLOCK_NONE,
-                HarmCategory.HARM_CATEGORY_HATE_SPEECH: HarmBlockThreshold.BLOCK_NONE,
-                HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT: HarmBlockThreshold.BLOCK_NONE,
-                HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT: HarmBlockThreshold.BLOCK_NONE,
-            }
-        )
+        # Configuration for the model
+        self.model_name = "openai/gpt-oss-20b"
+        self.temperature = 0.1
+        self.max_tokens = 8192
         
-        logger.info("LLM Processor initialized with Gemini")
+        logger.info("LLM Processor initialized with Groq")
     
     async def process_legal_html(self, html_content: str, query: str) -> Dict:
         """
@@ -142,12 +130,25 @@ HTML CONTENT:
         """Generate response with retry logic"""
         for attempt in range(max_retries):
             try:
-                response = self.model.generate_content(prompt)
+                completion = self.client.chat.completions.create(
+                    model=self.model_name,
+                    messages=[
+                        {
+                            "role": "user",
+                            "content": prompt
+                        }
+                    ],
+                    temperature=self.temperature,
+                    max_completion_tokens=self.max_tokens,
+                    top_p=0.9,
+                    stream=False,
+                    stop=None,
+                )
                 
-                if response.text:
-                    return response.text.strip()
+                if completion.choices[0].message.content:
+                    return completion.choices[0].message.content.strip()
                 else:
-                    raise Exception("Empty response from model")
+                    raise RuntimeError("Empty response from model")
                     
             except Exception as e:
                 logger.warning(f"LLM generation attempt {attempt + 1} failed: {e}")
@@ -155,7 +156,7 @@ HTML CONTENT:
                     raise
                 await asyncio.sleep(2 ** attempt)  # Exponential backoff
         
-        raise Exception("All LLM generation attempts failed")
+        raise RuntimeError("All LLM generation attempts failed")
     
     def _extract_json_from_response(self, response: str) -> Optional[Dict]:
         """Try to extract JSON from response that might have extra text"""
@@ -219,10 +220,20 @@ HTML CONTENT:
     def test_connection(self) -> bool:
         """Test if the LLM connection is working"""
         try:
-            test_prompt = "Return only this JSON: {\"test\": \"success\"}"
-            response = self.model.generate_content(test_prompt)
+            test_prompt = "Say 'Hello, connection test successful!'"
+            completion = self.client.chat.completions.create(
+                model=self.model_name,
+                messages=[
+                    {
+                        "role": "user",
+                        "content": test_prompt
+                    }
+                ],
+                temperature=0.1,
+                max_completion_tokens=100
+            )
             
-            if response.text and "success" in response.text:
+            if completion.choices[0].message.content and "successful" in completion.choices[0].message.content:
                 logger.info("LLM connection test successful")
                 return True
             else:
@@ -235,6 +246,6 @@ HTML CONTENT:
 
 # Convenience function
 async def process_legal_content(html_content: str, query: str, api_key: Optional[str] = None) -> Dict:
-    """Process legal HTML content and return structured data"""
+    """Process legal HTML content and return structured data using Groq"""
     processor = LLMProcessor(api_key)
     return await processor.process_legal_html(html_content, query)
