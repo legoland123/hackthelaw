@@ -1,0 +1,21 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "walter's backend debugger (uses selected interpreter - select your Conda env)",
+            "type": "debugpy",
+            "request": "launch",
+            // Launch the script directly so behavior matches running `python backend/run_app.py`
+            "program": "${workspaceFolder}/backend/run_app.py",
+            // Run with working directory set to the backend folder
+            "cwd": "${workspaceFolder}/backend",
+            // Use the interpreter selected in VS Code (set your Conda env as the workspace interpreter)
+            "python": "${command:python.interpreterPath}",
+            "console": "integratedTerminal",
+            "justMyCode": true
+        }
+    ]
+}
