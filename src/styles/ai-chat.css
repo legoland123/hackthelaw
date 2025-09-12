@@ -1,0 +1,8 @@
+/* AI Chat Page Styles */
+/* This file now imports modular CSS files for better organization */
+
+@import './ai-chat/layout.css';
+@import './ai-chat/header.css';
+@import './ai-chat/messages.css';
+@import './ai-chat/input.css';
+@import './ai-chat/sidebar.css';

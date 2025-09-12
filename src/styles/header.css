@@ -1,0 +1,95 @@
+/* App Header */
+.app-header {
+    background: var(--surface-color);
+    color: var(--text-primary);
+    padding: 1rem 2rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--border-color);
+    height: 80px;
+}
+
+.app-header .header-logo {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.app-header .logo {
+    height: 50px;
+    width: auto;
+}
+
+.app-header .header-title h1 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 0;
+    line-height: 1.2;
+}
+
+.app-header .header-title p {
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+    margin: 0;
+    opacity: 1;
+}
+
+.app-header .header-actions {
+    display: flex;
+    align-items: center;
+}
+
+.app-header .user-profile {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    cursor: pointer;
+    padding: 0.5rem;
+    border-radius: 8px;
+    transition: background-color 0.2s ease;
+}
+
+.app-header .user-profile:hover {
+    background-color: var(--background-color);
+}
+
+.app-header .user-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: var(--secondary-color);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-size: 0.875rem;
+}
+
+.app-header .user-name {
+    font-weight: 500;
+}
+
+.back-button {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* Responsive navigation */
+@media (max-width: 768px) {
+    .app-header .nav-links {
+        gap: 0.5rem;
+    }
+
+    .app-header .nav-link {
+        padding: 0.5rem;
+        font-size: 0.875rem;
+    }
+
+    .app-header .nav-link span {
+        display: none;
+    }
+}

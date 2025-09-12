@@ -1,0 +1,8 @@
+/* AI Chat Styles - Main Index */
+/* This file imports all modular AI chat styles */
+
+@import './layout.css';
+@import './header.css';
+@import './messages.css';
+@import './input.css';
+@import './sidebar.css';

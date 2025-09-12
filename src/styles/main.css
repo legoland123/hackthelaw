@@ -1,0 +1,20 @@
+/* Main CSS file - imports all modular styles */
+
+/* Import CSS variables first */
+@import './variables.css';
+
+/* Import base styles */
+@import './base.css';
+
+/* Import component-specific styles */
+@import './header.css';
+@import './sidebar.css';
+@import './timeline.css';
+@import './upload.css';
+@import './viewer.css';
+@import './conflict-resolver.css';
+@import './overview.css';
+@import './breadcrumb.css';
+@import './ai-chat.css';
+@import './modal.css';
+@import './rules.css';

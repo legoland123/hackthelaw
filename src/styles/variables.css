@@ -1,0 +1,28 @@
+:root {
+    --primary-color: #2c3e50;
+    --secondary-color: #3498db;
+    --accent-color: #e74c3c;
+    --success-color: #27ae60;
+    --warning-color: #f39c12;
+    --background-color: #f8f9fa;
+    --surface-color: #ffffff;
+    --text-primary: #2c3e50;
+    --text-secondary: #7f8c8d;
+    --border-color: #ecf0f1;
+    --shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    --shadow-hover: 0 4px 8px rgba(0, 0, 0, 0.15);
+
+    /* GitLab-style colors */
+    --gitlab-red: #d73a49;
+    --gitlab-green: #28a745;
+    --gitlab-blue: #0366d6;
+    --gitlab-orange: #f6a434;
+    --gitlab-purple: #6f42c1;
+    --gitlab-gray: #6a737d;
+    --gitlab-light-gray: #f6f8fa;
+    --gitlab-border: #e1e4e8;
+    --gitlab-diff-added: #e6ffed;
+    --gitlab-diff-removed: #ffeef0;
+    --gitlab-diff-added-border: #a3e4a3;
+    --gitlab-diff-removed-border: #f5c6cb;
+}
