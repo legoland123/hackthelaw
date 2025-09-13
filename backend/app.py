@@ -365,6 +365,9 @@ async def chat_with_legal_mind(request: ChatRequest):
         elif query_classification == "document":
             # Handle document-specific chat
             return await _handle_document_chat(llm_processor, request)
+        elif query_classification == "caselaw":
+            # Handle case law summary
+            return await _handle_caselaw_chat(llm_processor, request)
         else:
             # Handle legal query with full pipeline
             return await _handle_legal_query(llm_processor, request)
@@ -378,7 +381,7 @@ async def chat_with_legal_mind(request: ChatRequest):
 
 async def _classify_query_type(llm_processor: LLMProcessor, message: str, project_context: Optional[Dict] = None) -> str:
     """
-    Use LLM to classify whether the query is a normal question, document question, or legal question
+    Use LLM to classify whether the query is a normal question, document question, case law question, or legal question
     """
     has_documents = project_context and project_context.get('documents')
     
@@ -386,15 +389,19 @@ async def _classify_query_type(llm_processor: LLMProcessor, message: str, projec
 You are an AI agent that classifies user queries. Determine if the following query is:
 1. "normal" - General questions, casual conversation, non-legal topics
 2. "document" - Questions about specific documents, asking about document content, comparing documents, analyzing uploaded files
-3. "legal" - Legal questions, statute inquiries, case law, legal advice, compliance issues
+3. "caselaw" - Summarization of case law, precedents, or court decisions ( if they asking for summarizing of any case laws, pick this option over "legal")
+4. "legal" - If the user wants to find out relevant laws, regulations, or legal principles related to their question
 
 Query: "{message}"
 
 Context: {"User has documents uploaded in their project" if has_documents else "No documents available in project"}
 
-Important: Only classify as "document" if the user is specifically asking about their uploaded documents or document content.
+Important: 
+- Only classify as "document" if the user is specifically asking about their uploaded documents
+- Classify as "caselaw" if asking about summarizing of legal cases, precedents, or court decisions
+- Classify as "legal" for statute/regulation questions and general legal advice
 
-Respond with only one word: "normal", "document", or "legal"
+Respond with only one word: "normal", "document", "caselaw", or "legal"
 """
     
     try:
@@ -402,7 +409,7 @@ Respond with only one word: "normal", "document", or "legal"
         classification = classification_result.strip().lower()
         
         # Validate the response
-        if classification in ["normal", "document", "legal"]:
+        if classification in ["normal", "document", "caselaw", "legal"]:
             # If no documents available, don't route to document handler
             if classification == "document" and not has_documents:
                 logger.info("Query classified as 'document' but no documents available, routing to 'normal'")
@@ -472,6 +479,95 @@ Response:"""
         
     except Exception as e:
         logger.error(f"Normal chat generation failed: {e}")
+        raise HTTPException(status_code=500, detail="Failed to generate response")
+
+
+async def _handle_caselaw_chat(llm_processor: LLMProcessor, request: ChatRequest) -> ChatResponse:
+    """
+    Handle case law summary queries using eLitigation data
+    """
+    message = request.message.strip()
+    logger.info(f"⚖️ Handling case law summary query: {message[:50]}...")
+    
+    # Load eLitigation case data
+    try:
+        elitigation_data = json.load(open("legal_services/elitigation_scraped.json"))
+        logger.info(f"📋 Loaded {elitigation_data['total_found']} case law entries for analysis")
+    except Exception as e:
+        logger.error(f"Failed to load eLitigation data: {e}")
+    
+    # Create case law focused conversation prompt
+    conversation_prompt = f"""
+You are LIT Legal Mind, an AI assistant specializing in legal case law analysis and research.
+You are helping a user understand and analyze relevant case law and court decisions.
+
+Available Case Law Database:
+{elitigation_data}
+
+User Question: {message}
+
+Please provide a helpful response about case law relevant to the user's query. Include:
+1. Summary of relevant cases
+2. Key legal principles or precedents
+3. Links to the full cases when available
+4. How these cases might relate to the user's question
+
+If specific cases are particularly relevant, provide their details and explain their significance.
+
+Response:"""
+    
+    # Add conversation history if available
+    if request.conversation_history:
+        history_text = "\n".join([
+            f"{'User' if msg.role == 'user' else 'Assistant'}: {msg.content}"
+            for msg in request.conversation_history[-5:]  # Last 5 messages for context
+        ])
+        conversation_prompt = f"""
+You are LIT Legal Mind, an AI assistant specializing in legal case law analysis and research.
+You are helping a user understand and analyze relevant case law and court decisions.
+
+Available Case Law Database:
+{elitigation_data}
+
+Recent Conversation:
+{history_text}
+
+User Question: {message}
+
+Please provide a helpful response about case law relevant to the user's query. Include:
+1. Summary of relevant cases
+2. Key legal principles or precedents
+3. Links to the full cases when available
+4. How these cases might relate to the user's question
+
+If specific cases are particularly relevant, provide their details and explain their significance.
+
+Response:"""
+    
+    try:
+        response = await llm_processor._generate_with_retry(conversation_prompt)
+        
+        # Store conversation in database if user_id is provided
+        conversation_id = None
+        if request.user_id and request.user_id != "anonymous":
+            db = get_firestore_db()
+            conversation_id = db.store_conversation(
+                request.user_id, 
+                message, 
+                response, 
+                request.conversation_history,
+                request.project_id
+            )
+        
+        return {
+            "response": response,
+            "conversation_id": conversation_id,
+            "timestamp": datetime.now().isoformat(),
+            "query_type": "caselaw"
+        }
+        
+    except Exception as e:
+        logger.error(f"Case law chat generation failed: {e}")
         raise HTTPException(status_code=500, detail="Failed to generate response")
 
 
