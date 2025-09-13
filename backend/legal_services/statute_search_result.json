@@ -1,0 +1,32 @@
+{
+  "status": "success",
+  "query": "Can walter sue for emotional distress after his personal data was used in advertising without consent?",
+  "total_statutes": 5,
+  "statutes": [
+    {
+      "name and section": "Personal Data Protection Act 2012 (2020 Rev Ed) s 48O",
+      "description": "Provides a right of private action for individuals who suffer loss or damage directly as a result of a contravention of the PDPA. The Court of Appeal in Michael Reed v Alex Bellingham confirmed that 'loss or damage' includes emotional distress.",
+      "source": "Developments in Data Privacy Litigation [2022] PDP Digest; Legal Due Diligence in a Digital and Data-Driven Economy [2023] SAL Prac"
+    },
+    {
+      "name and section": "Personal Data Protection Act 2012 (2020 Rev Ed) ss 13–17",
+      "description": "Consent Obligation — organisations must not collect, use, or disclose personal data without the individual's consent, unless exceptions apply.",
+      "source": "Legal Due Diligence in a Digital and Data-Driven Economy [2023] SAL Prac"
+    },
+    {
+      "name and section": "Personal Data Protection Act 2012 (2020 Rev Ed) s 18",
+      "description": "Purpose Limitation Obligation — personal data may only be used for purposes that a reasonable person would consider appropriate, and only for purposes consented to by the individual.",
+      "source": "Legal Due Diligence in a Digital and Data-Driven Economy [2023] SAL Prac"
+    },
+    {
+      "name and section": "Personal Data Protection Act 2012 (2020 Rev Ed) s 24",
+      "description": "Protection Obligation — organisations must make reasonable security arrangements to protect personal data in their possession or under their control.",
+      "source": "Legal Due Diligence in a Digital and Data-Driven Economy [2023] SAL Prac"
+    },
+    {
+      "name and section": "Personal Data Protection Act 2012 (2020 Rev Ed) s 26A–26E",
+      "description": "Data Breach Notification Obligation — organisations must notify the PDPC and, in certain cases, affected individuals of data breaches that pose significant harm.",
+      "source": "Legal Due Diligence in a Digital and Data-Driven Economy [2023] SAL Prac"
+    }
+  ]
+}

@@ -339,7 +339,7 @@ async def vector_search_textbooks(request: VectorSearchRequest):
 @app.post("/chat")
 async def chat_with_legal_mind(request: ChatRequest):
     """
-    Chat with LIT Legal Mind using GROQ with automatic statute search and amendment analysis
+    Agentic Chat with LIT Legal Mind - Routes between normal chat and legal pipeline
     """
     try:
         # Validate input
@@ -355,229 +355,397 @@ async def chat_with_legal_mind(request: ChatRequest):
             logger.error(f"LLM Processor initialization failed: {e}")
             raise HTTPException(status_code=500, detail="AI service unavailable")
         
-        # Detect if the query requires statute search
-        statute_search_results = None
-        amendment_search_results = None
+        # Step 1: Determine query type using LLM agent
+        query_classification = await _classify_query_type(llm_processor, message, request.project_context)
+        logger.info(f"🤖 Query classified as: {query_classification}")
         
-        logger.info(f"🏛️ Legal query detected, performing statute search for: {message}")
-        
-        # Perform statute search
-        try:
-            statute_request = StatutesSearchRequest(
-                message=message,
-                project_context=request.project_context,
-                user_id=request.user_id,
-                max_statutes=5  # Limit for chat context
-            )
-            
-            if True: # hackathon override
-                statute_search_results = {
-  "status": "success",
-  "query": "Can walter sue for emotional distress after his personal data was used in advertising without consent?",
-  "total_statutes": 5,
-  "statutes": [
-    {
-      "name and section": "Personal Data Protection Act 2012 (2020 Rev Ed) s 48O",
-      "description": "Provides a right of private action for individuals who suffer loss or damage directly as a result of a contravention of the PDPA. The Court of Appeal in Michael Reed v Alex Bellingham confirmed that 'loss or damage' includes emotional distress.",
-      "source": "Developments in Data Privacy Litigation [2022] PDP Digest; Legal Due Diligence in a Digital and Data-Driven Economy [2023] SAL Prac"
-    },
-    {
-      "name and section": "Personal Data Protection Act 2012 (2020 Rev Ed) ss 13–17",
-      "description": "Consent Obligation — organisations must not collect, use, or disclose personal data without the individual's consent, unless exceptions apply.",
-      "source": "Legal Due Diligence in a Digital and Data-Driven Economy [2023] SAL Prac"
-    },
-    {
-      "name and section": "Personal Data Protection Act 2012 (2020 Rev Ed) s 18",
-      "description": "Purpose Limitation Obligation — personal data may only be used for purposes that a reasonable person would consider appropriate, and only for purposes consented to by the individual.",
-      "source": "Legal Due Diligence in a Digital and Data-Driven Economy [2023] SAL Prac"
-    },
-    {
-      "name and section": "Personal Data Protection Act 2012 (2020 Rev Ed) s 24",
-      "description": "Protection Obligation — organisations must make reasonable security arrangements to protect personal data in their possession or under their control.",
-      "source": "Legal Due Diligence in a Digital and Data-Driven Economy [2023] SAL Prac"
-    },
-    {
-      "name and section": "Personal Data Protection Act 2012 (2020 Rev Ed) s 26A–26E",
-      "description": "Data Breach Notification Obligation — organisations must notify the PDPC and, in certain cases, affected individuals of data breaches that pose significant harm.",
-      "source": "Legal Due Diligence in a Digital and Data-Driven Economy [2023] SAL Prac"
-    }
-  ]
-}
-
-            else:
-                statute_search_results = await find_relevant_statutes(statute_request)
-            
-            # If statutes were found, search for amendments
-            if (statute_search_results and 
-                statute_search_results.get('status') == 'success' and 
-                len(statute_search_results.get('statutes', [])) > 0):
-                
-                logger.info(f"🔍 Found {len(statute_search_results['statutes'])} statutes, checking for amendments")
-                
-                statute_names = [stat.get('name and section', '') for stat in statute_search_results['statutes'] if stat.get('name and section')]
-                
-                if statute_names:
-                    amendment_request = AmendmentSearchRequest(
-                        statutes=statute_names,
-                        user_id=request.user_id,
-                        max_results_per_statute=3  # Limit for chat context
-                    )
-                    
-                    if True: # hackathon override
-                        # sleep awhile and log
-                        logger.info("⏳ Simulating amendment search delay...")
-                        await asyncio.sleep(2)  # Simulate delay
-                        amendment_search_results = json.load(open("legal_services/amendment_sample.json"))
-                    else:
-                        amendment_search_results = await search_amendment(amendment_request)
-                
-                # Perform eLitigation search for testing (not included in conversation)
-                if (statute_search_results and 
-                    statute_search_results.get('status') == 'success' and 
-                    len(statute_search_results.get('statutes', [])) > 0):
-                    
-                    logger.info("🏛️ Performing eLitigation case search for testing")
-                    
-                    try:
-                        # Extract statute names for eLitigation search
-                        statute_names = [stat.get('name and section', '') for stat in statute_search_results['statutes'] if stat.get('name and section')]
-                        
-                        if statute_names:
-                            elitigation_request = ELitigationEnhancedRequest(
-                                names=statute_names,
-                                max_results=3,  # Limit for comprehensive context
-                                scrape_content=True,  # Enable content scraping
-                                user_id=request.user_id
-                            )
-                            
-                            if True: # hackathon override
-                                # sleep awhile and log
-                                logger.info("⏳ Simulating eLitigation search delay...")
-                                await asyncio.sleep(2)  # Simulate delay
-                                elitigation_results = json.load(open("legal_services/elitigation_scraped.json"))
-                            else:
-                                elitigation_results = search_and_scrape_elitigation_cases(elitigation_request)
-                            logger.info(f"📋 Enhanced eLitigation search completed: {elitigation_results.get('total_found', 0)} cases found")
-                            
-                            # Log results for testing
-                            if elitigation_results.get('status') == 'success':
-                                logger.info(f"🔍 Top eLitigation cases: {[case.get('title', '')[:50] + '...' for case in elitigation_results.get('cases', [])[:3]]}")
-                                
-                                # Log if we got scraped content
-                                scraped_count = sum(1 for case in elitigation_results.get('cases', []) if case.get('full_content'))
-                                logger.info(f"📄 Successfully scraped content from {scraped_count} cases")
-                                
-                                # Step 3: Apply advanced relevance ranking
-                                logger.info("🎯 Applying Step 3: Advanced Relevance Scoring...")
-                                
-                                try:
-                                    from legal_services.case_ranking import rank_elitigation_cases, extract_query_facts
-                                    
-                                    # Extract query facts for better ranking
-                                    query_facts = extract_query_facts(message)
-                                    logger.info(f"📋 Extracted facts from query: {query_facts}")
-                                    
-                                    # Extract statute names for ranking
-                                    target_statutes = [stat.get('name and section', '') for stat in statute_search_results.get('statutes', [])]
-                                    
-                                    # Apply multi-factor ranking
-                                    ranked_cases = rank_elitigation_cases(
-                                        cases=elitigation_results.get('cases', []),
-                                        query=message,
-                                        target_statutes=target_statutes,
-                                        query_facts=query_facts
-                                    )
-                                    
-                                    # Update results with ranked cases
-                                    elitigation_results['cases'] = ranked_cases
-                                    elitigation_results['ranking_applied'] = True
-                                    
-                                    # Log ranking results
-                                    if ranked_cases:
-                                        top_score = ranked_cases[0].get('relevance_score', 0)
-                                        avg_score = sum(case.get('relevance_score', 0) for case in ranked_cases) / len(ranked_cases)
-                                        logger.info(f"🏆 Ranking complete - Top score: {top_score:.3f}, Average: {avg_score:.3f}")
-                                        
-                                        # Log top 3 cases with scores
-                                        for i, case in enumerate(ranked_cases[:3]):
-                                            score = case.get('relevance_score', 0)
-                                            title = case.get('title', '')[:50] + '...'
-                                            logger.info(f"  #{i+1}: {title} (Score: {score:.3f})")
-                                    
-                                except Exception as ranking_error:
-                                    logger.warning(f"Relevance ranking failed: {ranking_error}")
-                                    # Continue without ranking if it fails
-
-                        else:
-                            elitigation_results = None
-                    
-                    except Exception as e:
-                        logger.warning(f"eLitigation search failed: {e}")
-
-        except Exception as e:
-            logger.warning(f"Statute/amendment search failed in chat: {e}")
-            # Continue with chat even if statute search fails
-        
-        # Create enhanced conversation context with statute, amendment, and case information
-        conversation_context = create_comprehensive_conversation_context(
-            request.conversation_history,
-            message,
-            request.project_context,
-            statute_search_results,
-            amendment_search_results,
-            elitigation_results if 'elitigation_results' in locals() else None
-        )
-        
-        # Generate response using LLM
-        try:
-            response = await llm_processor._generate_with_retry(conversation_context)
-            
-            # Enhance response with ranked cases visualization if available
-            if 'elitigation_results' in locals() and elitigation_results and elitigation_results.get('status') == 'success':
-                ranked_cases = elitigation_results.get('cases', [])
-                if ranked_cases and elitigation_results.get('ranking_applied', False):
-                    case_visualization = create_case_relevance_visualization(ranked_cases)
-                    response = response + "\n\n" + case_visualization
-            
-            # Store conversation in database if user_id is provided
-            if request.user_id and request.user_id != "anonymous":
-                db = get_firestore_db()
-                conversation_id = db.store_conversation(
-                    request.user_id, 
-                    message, 
-                    response, 
-                    request.conversation_history,
-                    request.project_id  # Store project ID with conversation
-                )
-            else:
-                conversation_id = None
-            
-            # Prepare enhanced response with statute and amendment data
-            response_data = {
-                "response": response,
-                "conversation_id": conversation_id,
-                "timestamp": datetime.now().isoformat()
-            }
-            
-            # Add statute search results if available
-            if statute_search_results:
-                response_data["statute_search"] = statute_search_results
-            
-            # Add amendment search results if available
-            if amendment_search_results:
-                response_data["amendment_search"] = amendment_search_results
-            
-            return response_data
-            
-        except Exception as e:
-            logger.error(f"Chat generation failed: {e}")
-            raise HTTPException(status_code=500, detail="Failed to generate response")
+        if query_classification == "normal":
+            # Handle normal chat query
+            return await _handle_normal_chat(llm_processor, request)
+        elif query_classification == "document":
+            # Handle document-specific chat
+            return await _handle_document_chat(llm_processor, request)
+        else:
+            # Handle legal query with full pipeline
+            return await _handle_legal_query(llm_processor, request)
         
     except HTTPException:
         raise
     except Exception as e:
         logger.error(f"Chat failed: {e}")
         raise HTTPException(status_code=500, detail=str(e))
+
+
+async def _classify_query_type(llm_processor: LLMProcessor, message: str, project_context: Optional[Dict] = None) -> str:
+    """
+    Use LLM to classify whether the query is a normal question, document question, or legal question
+    """
+    has_documents = project_context and project_context.get('documents')
+    
+    classification_prompt = f"""
+You are an AI agent that classifies user queries. Determine if the following query is:
+1. "normal" - General questions, casual conversation, non-legal topics
+2. "document" - Questions about specific documents, asking about document content, comparing documents, analyzing uploaded files
+3. "legal" - Legal questions, statute inquiries, case law, legal advice, compliance issues
+
+Query: "{message}"
+
+Context: {"User has documents uploaded in their project" if has_documents else "No documents available in project"}
+
+Important: Only classify as "document" if the user is specifically asking about their uploaded documents or document content.
+
+Respond with only one word: "normal", "document", or "legal"
+"""
+    
+    try:
+        classification_result = await llm_processor._generate_with_retry(classification_prompt)
+        classification = classification_result.strip().lower()
+        
+        # Validate the response
+        if classification in ["normal", "document", "legal"]:
+            # If no documents available, don't route to document handler
+            if classification == "document" and not has_documents:
+                logger.info("Query classified as 'document' but no documents available, routing to 'normal'")
+                return "normal"
+            return classification
+        else:
+            # Default to legal if unclear (safer for legal platform)
+            logger.warning(f"Unclear classification result: {classification_result}, defaulting to 'legal'")
+            return "legal"
+            
+    except Exception as e:
+        logger.warning(f"Query classification failed: {e}, defaulting to 'legal'")
+        return "legal"  # Default to legal pipeline if classification fails
+
+
+async def _handle_normal_chat(llm_processor: LLMProcessor, request: ChatRequest) -> ChatResponse:
+    """
+    Handle normal chat queries without legal pipeline
+    """
+    message = request.message.strip()
+    logger.info(f"💬 Handling normal chat query: {message[:50]}...")
+    
+    # Create simple conversation context for normal chat
+    conversation_prompt = f"""
+You are LIT Legal Mind, a helpful AI assistant. You can answer general questions and have casual conversations.
+Keep your responses friendly and helpful.
+
+User: {message}
+
+Response:"""
+    
+    # Add conversation history if available
+    if request.conversation_history:
+        history_text = "\n".join([
+            f"{'User' if msg.role == 'user' else 'Assistant'}: {msg.content}"
+            for msg in request.conversation_history[-5:]  # Last 5 messages for context
+        ])
+        conversation_prompt = f"""
+You are LIT Legal Mind, a helpful AI assistant. Here's the recent conversation history:
+
+{history_text}
+
+User: {message}
+
+Response:"""
+    
+    try:
+        response = await llm_processor._generate_with_retry(conversation_prompt)
+        
+        # Store conversation in database if user_id is provided
+        conversation_id = None
+        if request.user_id and request.user_id != "anonymous":
+            db = get_firestore_db()
+            conversation_id = db.store_conversation(
+                request.user_id, 
+                message, 
+                response, 
+                request.conversation_history,
+                request.project_id
+            )
+        
+        return {
+            "response": response,
+            "conversation_id": conversation_id,
+            "timestamp": datetime.now().isoformat()
+        }
+        
+    except Exception as e:
+        logger.error(f"Normal chat generation failed: {e}")
+        raise HTTPException(status_code=500, detail="Failed to generate response")
+
+
+async def _handle_document_chat(llm_processor: LLMProcessor, request: ChatRequest) -> ChatResponse:
+    """
+    Handle document-specific chat queries using project context
+    """
+    message = request.message.strip()
+    logger.info(f"📄 Handling document chat query: {message[:50]}...")
+    
+    # Build document context from project
+    document_context = ""
+    if request.project_context and request.project_context.get('documents'):
+        document_context = request.project_context['documents']
+        
+    # Create document-focused conversation prompt
+    conversation_prompt = f"""
+You are LIT Legal Mind, an AI assistant specializing in document analysis and legal research.
+You are helping a user understand and analyze their uploaded documents.
+
+Available Documents:
+{document_context if document_context else "No documents are currently available in this project."}
+
+User Question: {message}
+
+Please provide a helpful response about the user's documents. If the user is asking about specific content, 
+refer to the document content provided above. If you need more specific information about a document, 
+let the user know what additional details would be helpful.
+
+Response:"""
+    
+    # Add conversation history if available
+    if request.conversation_history:
+        history_text = "\n".join([
+            f"{'User' if msg.role == 'user' else 'Assistant'}: {msg.content}"
+            for msg in request.conversation_history[-5:]  # Last 5 messages for context
+        ])
+        conversation_prompt = f"""
+You are LIT Legal Mind, an AI assistant specializing in document analysis and legal research.
+You are helping a user understand and analyze their uploaded documents.
+
+Available Documents:
+{document_context if document_context else "No documents are currently available in this project."}
+
+Recent Conversation:
+{history_text}
+
+User Question: {message}
+
+Please provide a helpful response about the user's documents. If the user is asking about specific content, 
+refer to the document content provided above. If you need more specific information about a document, 
+let the user know what additional details would be helpful.
+
+Response:"""
+    
+    try:
+        response = await llm_processor._generate_with_retry(conversation_prompt)
+        
+        # Store conversation in database if user_id is provided
+        conversation_id = None
+        if request.user_id and request.user_id != "anonymous":
+            db = get_firestore_db()
+            conversation_id = db.store_conversation(
+                request.user_id, 
+                message, 
+                response, 
+                request.conversation_history,
+                request.project_id
+            )
+        
+        return {
+            "response": response,
+            "conversation_id": conversation_id,
+            "timestamp": datetime.now().isoformat(),
+            "query_type": "document"
+        }
+        
+    except Exception as e:
+        logger.error(f"Document chat generation failed: {e}")
+        raise HTTPException(status_code=500, detail="Failed to generate response")
+
+
+async def _handle_legal_query(llm_processor: LLMProcessor, request: ChatRequest) -> ChatResponse:
+    """
+    Handle legal queries with full legal pipeline (original method)
+    """
+    message = request.message.strip()
+    logger.info(f"⚖️ Handling legal query with full pipeline: {message[:50]}...")
+    
+    # Detect if the query requires statute search
+    statute_search_results = None
+    amendment_search_results = None
+    
+    logger.info(f"🏛️ Legal query detected, performing statute search for: {message}")
+    
+    # Perform statute search
+    try:
+        statute_request = StatutesSearchRequest(
+            message=message,
+            project_context=request.project_context,
+            user_id=request.user_id,
+            max_statutes=5  # Limit for chat context
+        )
+        
+        if True: # hackathon override
+            statute_search_results = json.load(open("legal_services/statute_search_result.json"))
+        else:
+            statute_search_results = await find_relevant_statutes(statute_request)
+        
+        # If statutes were found, search for amendments
+        if (statute_search_results and 
+            statute_search_results.get('status') == 'success' and 
+            len(statute_search_results.get('statutes', [])) > 0):
+            
+            logger.info(f"🔍 Found {len(statute_search_results['statutes'])} statutes, checking for amendments")
+            
+            statute_names = [stat.get('name and section', '') for stat in statute_search_results['statutes'] if stat.get('name and section')]
+            
+            if statute_names:
+                amendment_request = AmendmentSearchRequest(
+                    statutes=statute_names,
+                    user_id=request.user_id,
+                    max_results_per_statute=3  # Limit for chat context
+                )
+                
+                if True: # hackathon override
+                    # sleep awhile and log
+                    logger.info("⏳ Simulating amendment search delay...")
+                    await asyncio.sleep(2)  # Simulate delay
+                    amendment_search_results = json.load(open("legal_services/amendment_sample.json"))
+                else:
+                    amendment_search_results = await search_amendment(amendment_request)
+            
+            # Perform eLitigation search for testing (not included in conversation)
+            if (statute_search_results and 
+                statute_search_results.get('status') == 'success' and 
+                len(statute_search_results.get('statutes', [])) > 0):
+                
+                logger.info("🏛️ Performing eLitigation case search for testing")
+                
+                try:
+                    # Extract statute names for eLitigation search
+                    statute_names = [stat.get('name and section', '') for stat in statute_search_results['statutes'] if stat.get('name and section')]
+                    
+                    if statute_names:
+                        elitigation_request = ELitigationEnhancedRequest(
+                            names=statute_names,
+                            max_results=3,  # Limit for comprehensive context
+                            scrape_content=True,  # Enable content scraping
+                            user_id=request.user_id
+                        )
+                        
+                        if True: # hackathon override
+                            # sleep awhile and log
+                            logger.info("⏳ Simulating eLitigation search delay...")
+                            await asyncio.sleep(2)  # Simulate delay
+                            elitigation_results = json.load(open("legal_services/elitigation_scraped.json"))
+                        else:
+                            elitigation_results = search_and_scrape_elitigation_cases(elitigation_request)
+                        logger.info(f"📋 Enhanced eLitigation search completed: {elitigation_results.get('total_found', 0)} cases found")
+                        
+                        # Log results for testing
+                        if elitigation_results.get('status') == 'success':
+                            logger.info(f"🔍 Top eLitigation cases: {[case.get('title', '')[:50] + '...' for case in elitigation_results.get('cases', [])[:3]]}")
+                            
+                            # Log if we got scraped content
+                            scraped_count = sum(1 for case in elitigation_results.get('cases', []) if case.get('full_content'))
+                            logger.info(f"📄 Successfully scraped content from {scraped_count} cases")
+                            
+                            # Step 3: Apply advanced relevance ranking
+                            logger.info("🎯 Applying Step 3: Advanced Relevance Scoring...")
+                            
+                            try:
+                                from legal_services.case_ranking import rank_elitigation_cases, extract_query_facts
+                                
+                                # Extract query facts for better ranking
+                                query_facts = extract_query_facts(message)
+                                logger.info(f"📋 Extracted facts from query: {query_facts}")
+                                
+                                # Extract statute names for ranking
+                                target_statutes = [stat.get('name and section', '') for stat in statute_search_results.get('statutes', [])]
+                                
+                                # Apply multi-factor ranking
+                                ranked_cases = rank_elitigation_cases(
+                                    cases=elitigation_results.get('cases', []),
+                                    query=message,
+                                    target_statutes=target_statutes,
+                                    query_facts=query_facts
+                                )
+                                
+                                # Update results with ranked cases
+                                elitigation_results['cases'] = ranked_cases
+                                elitigation_results['ranking_applied'] = True
+                                
+                                # Log ranking results
+                                if ranked_cases:
+                                    top_score = ranked_cases[0].get('relevance_score', 0)
+                                    avg_score = sum(case.get('relevance_score', 0) for case in ranked_cases) / len(ranked_cases)
+                                    logger.info(f"🏆 Ranking complete - Top score: {top_score:.3f}, Average: {avg_score:.3f}")
+                                    
+                                    # Log top 3 cases with scores
+                                    for i, case in enumerate(ranked_cases[:3]):
+                                        score = case.get('relevance_score', 0)
+                                        title = case.get('title', '')[:50] + '...'
+                                        logger.info(f"  #{i+1}: {title} (Score: {score:.3f})")
+                                
+                            except Exception as ranking_error:
+                                logger.warning(f"Relevance ranking failed: {ranking_error}")
+                                # Continue without ranking if it fails
+
+                    else:
+                        elitigation_results = None
+                
+                except Exception as e:
+                    logger.warning(f"eLitigation search failed: {e}")
+
+    except Exception as e:
+        logger.warning(f"Statute/amendment search failed in chat: {e}")
+        # Continue with chat even if statute search fails
+    
+    # Create enhanced conversation context with statute, amendment, and case information
+    conversation_context = create_comprehensive_conversation_context(
+        request.conversation_history,
+        message,
+        request.project_context,
+        statute_search_results,
+        amendment_search_results,
+        elitigation_results if 'elitigation_results' in locals() else None
+    )
+    
+    # Generate response using LLM
+    try:
+        response = await llm_processor._generate_with_retry(conversation_context)
+        
+        # Enhance response with ranked cases visualization if available
+        if 'elitigation_results' in locals() and elitigation_results and elitigation_results.get('status') == 'success':
+            ranked_cases = elitigation_results.get('cases', [])
+            if ranked_cases and elitigation_results.get('ranking_applied', False):
+                case_visualization = create_case_relevance_visualization(ranked_cases)
+                response = response + "\n\n" + case_visualization
+        
+        # Store conversation in database if user_id is provided
+        if request.user_id and request.user_id != "anonymous":
+            db = get_firestore_db()
+            conversation_id = db.store_conversation(
+                request.user_id, 
+                message, 
+                response, 
+                request.conversation_history,
+                request.project_id  # Store project ID with conversation
+            )
+        else:
+            conversation_id = None
+        
+        # Prepare enhanced response with statute and amendment data
+        response_data = {
+            "response": response,
+            "conversation_id": conversation_id,
+            "timestamp": datetime.now().isoformat()
+        }
+        
+        # Add statute search results if available
+        if statute_search_results:
+            response_data["statute_search"] = statute_search_results
+        
+        # Add amendment search results if available
+        if amendment_search_results:
+            response_data["amendment_search"] = amendment_search_results
+        
+        return response_data
+        
+    except Exception as e:
+        logger.error(f"Legal chat generation failed: {e}")
+        raise HTTPException(status_code=500, detail="Failed to generate response")
 
 @app.post("/statutes-search")
 async def statute_search_endpoint(request: StatutesSearchRequest):
