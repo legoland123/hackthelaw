@@ -1,0 +1,97 @@
+.fm { display: flex; flex-direction: column; gap: 16px; }
+.fm__head { display:flex; align-items:flex-end; justify-content:space-between; gap:16px; }
+.fm__title { margin:0; font-size: 1.4rem; color: var(--text-primary); }
+.fm__subtitle { margin:4px 0 0; color: var(--text-secondary); }
+
+.fm__toolbar { display:flex; gap:10px; align-items:center; flex-wrap:wrap; }
+.fm__file-input { display:none; }
+.fm__title-input {
+  width: 220px; max-width: 40vw;
+  background:#0f172a; color:var(--text-primary);
+  border:1px solid var(--border-color); border-radius:10px; padding:8px 10px;
+}
+
+.fm__empty { text-align:center; padding:40px 16px; }
+.fm__empty-icon { font-size:42px; opacity:.75; margin-bottom:8px; }
+
+.fm__table { width:100%; border-collapse:collapse; }
+.fm__table thead th {
+  text-align:left; font-weight:600; color:var(--text-secondary);
+  border-bottom:1px solid var(--border-color); padding:10px 12px;
+}
+.fm__table tbody td {
+  padding:12px; border-bottom:1px dashed var(--border-color);
+  vertical-align:middle; color:var(--text-primary);
+}/* File Manager – compact Google-Drive-like UI */
+.file-manager { display:flex; flex-direction:column; gap:12px; }
+
+.page-header .title { margin:0; font-size:1.4rem; color:var(--text-primary); }
+.page-header .subtitle { margin:4px 0 0; color:var(--text-secondary); }
+
+.card {
+  background: var(--surface-color);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 14px;
+}
+
+.upload-card { margin-bottom: 4px; }
+
+/* Upload bar */
+.drive-upload { display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
+.drive-upload input[type="file"] { color:var(--text-secondary); }
+.drive-title {
+  width: 240px; max-width: 45vw;
+  background:#0f172a; color:var(--text-primary);
+  border:1px solid var(--border-color); border-radius:10px; padding:8px 10px;
+}
+
+/* Empty state */
+.empty { text-align:center; padding:34px 10px; }
+.empty-icon { font-size:42px; opacity:.75; margin-bottom:6px; }
+.empty h3 { margin:8px 0 6px; }
+
+/* Table */
+.drive-table-wrapper { overflow:auto; }
+.drive-table { width:100%; border-collapse:collapse; }
+.drive-table thead th {
+  text-align:left; font-weight:600; color:var(--text-secondary);
+  border-bottom:1px solid var(--border-color); padding:10px 12px;
+}
+.drive-table tbody td {
+  padding:12px; border-bottom:1px dashed var(--border-color);
+  vertical-align:middle; color:var(--text-primary);
+}
+.drive-table tbody tr:hover { background: var(--surface-elevated); }
+
+.drive-name { display:flex; align-items:center; gap:10px; }
+.drive-icon { font-size:18px; }
+
+.link {
+  color: var(--gitlab-blue);
+  background:none; border:0; cursor:pointer; padding:0; font: inherit;
+}
+.link:hover { text-decoration: underline; }
+
+.drive-actions { display:flex; gap:8px; justify-content:flex-end; }
+
+/* Buttons (uses your existing button tokens) */
+.btn { cursor:pointer; border-radius:10px; padding:8px 12px; border:1px solid transparent; }
+.btn-primary { background:#1f9ca1; color:#001314; border-color:#15787c; }
+.btn-outline { background:transparent; color:var(--text-primary); border-color:var(--border-color); }
+.btn-danger { background:#3a0f14; color:#ffd7d7; border-color:#5b1a22; }
+.btn-sm { padding:6px 10px; font-size:.9rem; }
+
+.fm__table tbody tr:hover { background: var(--surface-elevated); }
+
+.fm__name { display:flex; align-items:center; gap:10px; }
+.fm__icon { font-size: 18px; }
+
+.fm__actions-col { width: 260px; }
+.fm__actions { display:flex; gap:8px; justify-content:flex-end; }
+
+.link {
+  color: var(--gitlab-blue);
+  background:none; border:0; cursor:pointer; padding:0;
+}
+.link:hover { text-decoration: underline; }

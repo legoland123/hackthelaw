@@ -1,158 +1,167 @@
+// src/pages/ProjectView.jsx
 import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
+
 import Sidebar from '../components/Sidebar';
 import Breadcrumb from '../components/Breadcrumb';
-import VersionTimeline from '../components/VersionTimeline';
-import DocumentUpload from '../components/DocumentUpload';
+import FileManager from '../components/FileManager';
 import ConflictResolver from '../components/ConflictResolver';
 import DocumentViewer from '../components/DocumentViewer';
 import ProjectChat from '../components/ProjectChat';
-import ProjectRules from '../components/ProjectRules';
+// import ProjectRules from '../components/ProjectRules';
 import { documentServices, conflictServices } from '../firebase/services';
 
-const ProjectView = ({ projects, onUpdateProject }) => {
-    const { projectId } = useParams();
-    const navigate = useNavigate();
+const ProjectView = ({ projects = [], onUpdateProject }) => {
+  const { projectId } = useParams();
+  const navigate = useNavigate();
+  const { pathname } = useLocation();
 
-    const [activeView, setActiveView] = useState('timeline');
-    const [selectedDocument, setSelectedDocument] = useState(null);
-    const [documents, setDocuments] = useState([]);
-    const [conflicts, setConflicts] = useState([]);
-    const [loading, setLoading] = useState(true);
+  // files == our default “timeline”
+  const [activeView, setActiveView] = useState('timeline');
+  const [selectedDocument, setSelectedDocument] = useState(null);
+  const [documents, setDocuments] = useState([]);
+  const [conflicts, setConflicts] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-    const project = projects.find(p => p.id === projectId);
+  const project = projects.find((p) => p.id === projectId);
 
-    useEffect(() => {
-        if (project) {
-            const fetchData = async () => {
-                try {
-                    setLoading(true);
+  // Derive the view from URL (chat/statutes/files)
+  useEffect(() => {
+    if (pathname.endsWith('/chat')) setActiveView('ai-chat');
+    else if (pathname.endsWith('/statutes')) setActiveView('statutes');
+    else setActiveView('timeline');
+  }, [pathname]);
 
-                    let docs = [];
-                    if (project.documentIds && project.documentIds.length > 0) {
-                        const docPromises = project.documentIds.map(id => documentServices.getDocumentById(id));
-                        docs = await Promise.all(docPromises);
-                    }
-
-                    // Set documents first, regardless of conflicts
-                    setDocuments(docs.filter(Boolean));
-
-                    // Try to fetch conflicts, but don't let it fail the entire operation
-                    try {
-                        const confs = await conflictServices.getConflictsByProjectId(projectId);
-                        setConflicts(confs);
-                    } catch (conflictError) {
-                        console.warn('Failed to fetch conflicts (this is expected if no index is set up):', conflictError);
-                        setConflicts([]);
-                    }
-                } catch (error) {
-                    console.error("Failed to fetch project data:", error);
-                } finally {
-                    setLoading(false);
-                }
-            };
-            fetchData();
+  // Load docs for this project
+  useEffect(() => {
+    if (!project) return;
+    (async () => {
+      setLoading(true);
+      try {
+        let docs = [];
+        if (project.documentIds?.length) {
+          const reads = project.documentIds.map((id) => documentServices.getDocumentById(id));
+          docs = (await Promise.all(reads)).filter(Boolean);
         }
-    }, [projectId, project]);
+        setDocuments(docs);
 
-    if (!project) {
-        return (
-            <div className="app-container">
-                <div className="main-content">
-                    <div className="empty-state">
-                        <div className="empty-state-icon">⏳</div>
-                        <h3 className="empty-state-title">Loading Project...</h3>
-                        <p className="empty-state-description">
-                            Please wait while we fetch the project details. If you've just created a new project, this may take a moment.
-                        </p>
-                    </div>
-                </div>
-            </div>
-        );
-    }
+        // Conflicts are optional; don’t break page if not available
+        try {
+          const confs = await conflictServices.getConflictsByProjectId(projectId);
+          setConflicts(confs || []);
+        } catch {
+          setConflicts([]);
+        }
+      } catch (e) {
+        console.error('Failed to fetch project data:', e);
+      } finally {
+        setLoading(false);
+      }
+    })();
+  }, [projectId, project]);
 
-    const handleDocumentUpload = (newDocument) => {
-        setDocuments(prev => [newDocument, ...prev]);
-        const updatedProject = {
-            ...project,
-            documentIds: [...(project.documentIds || []), newDocument.id]
-        };
-        onUpdateProject(updatedProject);
-        setActiveView('timeline');
+  const handleBackToOverview = () => navigate('/');
+
+  // FileManager handlers
+  const handleCreate = async (file, title) => {
+    const payload = {
+      title: title || file.name,
+      description: '',
+      author: 'Anonymous',
+      changes: [],
     };
+    const created = await documentServices.createDocument(projectId, payload, file);
+    setDocuments((prev) => [created, ...prev]);
+    onUpdateProject?.({
+      ...project,
+      documentIds: [...(project.documentIds || []), created.id],
+    });
+  };
 
-    const handleConflictResolved = (conflictId, resolution) => {
-        setConflicts(prev => prev.filter(c => c.id !== conflictId));
-    };
+  const handleDelete = async (docId) => {
+    await documentServices.deleteDocument(docId);
+    setDocuments((prev) => prev.filter((d) => d.id !== docId));
+    onUpdateProject?.({
+      ...project,
+      documentIds: (project.documentIds || []).filter((id) => id !== docId),
+    });
+    if (selectedDocument?.id === docId) setSelectedDocument(null);
+  };
 
-    const handleBackToOverview = () => {
-        navigate('/');
-    };
-
+  if (!project) {
     return (
-        <div className="app-container">
-            <Sidebar
-                activeView={activeView}
-                setActiveView={setActiveView}
-                documentCount={documents.length}
-                conflictCount={conflicts.length}
-                projectName={project.name}
-                onBackToOverview={handleBackToOverview}
-            />
-            <main className="main-content">
-                <Breadcrumb projectName={project.name} />
-                {loading ? (
-                    <div className="loading">
-                        <div className="spinner"></div>
-                        Loading project data...
-                    </div>
-                ) : (
-                    <>
-                        {activeView === 'timeline' && (
-                            <VersionTimeline
-                                documents={documents}
-                                onDocumentSelect={setSelectedDocument}
-                                selectedDocument={selectedDocument}
-                                setActiveView={setActiveView}
-                            />
-                        )}
-                        {activeView === 'upload' && (
-                            <DocumentUpload
-                                projectId={projectId}
-                                onUpload={handleDocumentUpload}
-                                existingDocuments={documents}
-                            />
-                        )}
-                        {activeView === 'conflicts' && (
-                            <ConflictResolver
-                                conflicts={conflicts}
-                                onResolve={handleConflictResolved}
-                            />
-                        )}
-                        {activeView === 'ai-chat' && (
-                            <ProjectChat
-                                project={project}
-                                documents={documents}
-                                onDocumentSelect={setSelectedDocument}
-                            />
-                        )}
-                        {activeView === 'rules' && (
-                            <ProjectRules
-                                projectId={projectId}
-                                projectName={project.name}
-                            />
-                        )}
-                        {selectedDocument && (
-                            <DocumentViewer
-                                document={selectedDocument}
-                                onClose={() => setSelectedDocument(null)}
-                            />
-                        )}
-                    </>
-                )}
-            </main>
-        </div>
+      <div className="app-container">
+        <main className="main-content">
+          <div className="empty-state">
+            <div className="empty-state-icon">⏳</div>
+            <h3 className="empty-state-title">Loading Project…</h3>
+            <p className="empty-state-description">
+              Please wait while we fetch the project details.
+            </p>
+          </div>
+        </main>
+      </div>
     );
+  }
+
+  return (
+    <div className="app-container">
+      <Sidebar
+        projectId={projectId}
+        activeView={activeView}
+        setActiveView={setActiveView}
+        documentCount={documents.length}
+        conflictCount={conflicts.length}
+        projectName={project.name}
+        onBackToOverview={handleBackToOverview}
+      />
+
+      <main className="main-content">
+        <Breadcrumb projectName={project.name} />
+
+        {loading ? (
+          <div className="loading"><div className="spinner" />Loading project data…</div>
+        ) : (
+          <>
+            {activeView === 'timeline' && (
+              <FileManager
+                projectId={projectId}
+                documents={documents}
+                onOpen={setSelectedDocument}
+                onCreate={handleCreate}
+                onDelete={handleDelete}
+              />
+            )}
+
+            {activeView === 'ai-chat' && (
+              <ProjectChat
+                project={project}
+                documents={documents}
+                onDocumentSelect={setSelectedDocument}
+              />
+            )}
+
+            {activeView === 'statutes' && (
+              <div className="card">
+                <h3>Statute Finder (Project Scoped)</h3>
+                <p>
+                  You’re on <code>/project/{projectId}/statutes</code>. Hook this up to your
+                  project-specific statute UI when ready.
+                </p>
+              </div>
+            )}
+
+            {selectedDocument && (
+              <DocumentViewer
+                document={selectedDocument}
+                onClose={() => setSelectedDocument(null)}
+              />
+            )}
+          </>
+        )}
+      </main>
+    </div>
+  );
 };
 
-export default ProjectView; 
+export default ProjectView;

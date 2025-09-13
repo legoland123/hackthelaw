@@ -32,14 +32,22 @@ const COLLECTIONS = {
 // ---------- Project Services ----------
 export const projectServices = {
   async getAllProjects() {
-    await ensureAuth();
-    const q = query(
-      collection(db, COLLECTIONS.PROJECTS),
-      orderBy("lastUpdated", "desc")
-    );
-    const snap = await getDocs(q);
-    return snap.docs.map((d) => ({ id: d.id, ...d.data() }));
-  },
+    try {
+     const q = query(collection(db, 'projects'), orderBy('lastUpdated', 'desc'));
+     const snap = await getDocs(q);
+     return snap.docs.map(d => ({ id: d.id, ...d.data() }));
+   } catch (e) {
+    console.warn('[Firestore] getAllProjects failed (dev):', e?.message || e);
+  return [];
+//    await ensureAuth();
+//    const q = query(
+//      collection(db, COLLECTIONS.PROJECTS),
+//      orderBy("lastUpdated", "desc")
+//    );
+//    const snap = await getDocs(q);
+//    return snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+  }
+},
 
   async getProjectById(projectId) {
     await ensureAuth();

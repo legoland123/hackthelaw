@@ -33,9 +33,10 @@ const Overview = ({ projects, onCreateNewProject }) => {
                     </p>
                 </div>
                 <div className="overview-header-actions">
-                    <Link to="/ai-chat" className="ai-legal-btn" title="LIT Legal Mind">
-                        🤖
+                    <Link to="/ai-chat" className="ai-legal-btn" title="AITHENA">🦾
                     </Link>
+                    <Link to="/statutes" className="btn btn-outline" title="Statute Finder">⚖️</Link>
+                        
                     <button className="btn btn-primary" onClick={handleCreateProject}>
                         + Create New Project
                     </button>
@@ -53,8 +54,11 @@ const Overview = ({ projects, onCreateNewProject }) => {
                         <button className="btn btn-primary" onClick={handleCreateProject}>
                             Create New Project
                         </button>
-                        <Link to="/ai-chat" className="ai-legal-btn" title="LIT Legal Mind">
-                            🤖
+                        <Link to="/statutes" className="btn btn-outline" title="Statute Finder">
+                            ⚖️
+                        </Link>
+                        <Link to="/ai-chat" className="ai-legal-btn" title="AITHENA">
+                            🦾
                         </Link>
                     </div>
                 </div>
