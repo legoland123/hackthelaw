@@ -1,17 +1,29 @@
 import { useState, useEffect } from 'react'
-import { Routes, Route, Navigate } from 'react-router-dom'
+import { Routes, Route, Navigate, useNavigate } from 'react-router-dom'
 import './styles/main.css'
 import Overview from './pages/Overview'
 import ProjectView from './pages/ProjectView'
 import NotFound from './pages/NotFound'
 import AIChat from './pages/AIChat'
 import CreateProjectModal from './components/CreateProjectModal'
+import LoginPage from './pages/Login'
+import SignupPage from './pages/Signup'
 import { projectServices } from './firebase/services'
 
 function App() {
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const [user, setUser] = useState(null);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    // restore session from localStorage
+    const saved = localStorage.getItem('authUser')
+    if (saved) {
+      try { setUser(JSON.parse(saved)) } catch (e) { localStorage.removeItem('authUser') }
+    }
+  }, [])
 
   useEffect(() => {
     const fetchProjects = async () => {
@@ -26,6 +38,19 @@ function App() {
     };
     fetchProjects();
   }, []);
+
+  const handleLogin = (u) => {
+    // persist minimal session locally (for local / demo auth)
+    localStorage.setItem('authUser', JSON.stringify(u))
+    setUser(u)
+    navigate('/', { replace: true })
+  }
+
+  const handleLogout = () => {
+    localStorage.removeItem('authUser')
+    setUser(null)
+    navigate('/login', { replace: true })
+  }
 
   const handleUpdateProject = async (updatedProject) => {
     try {
@@ -64,6 +89,13 @@ function App() {
     }
   };
 
+  function RequireAuth({ children }) {
+    if (!user) {
+      return <Navigate to="/login" replace />
+    }
+    return children
+  }
+
   return (
     <div className="app">
       <header className="app-header">
@@ -77,8 +109,18 @@ function App() {
         <div className="header-nav"></div>
         <div className="header-actions">
           <div className="user-profile">
-            <span className="user-name">Guest User</span>
-            <div className="user-avatar">GU</div>
+            {user ? (
+              <>
+                <span className="user-name">{user.email}</span>
+                <button onClick={handleLogout} className="btn-ghost">Logout</button>
+                <div className="user-avatar">{(user.email || 'U').slice(0,2).toUpperCase()}</div>
+              </>
+            ) : (
+              <>
+                <span className="user-name">Guest User</span>
+                <div className="user-avatar">GU</div>
+              </>
+            )}
           </div>
         </div>
       </header>
@@ -91,25 +133,36 @@ function App() {
       ) : (
         <>
           <Routes>
+            <Route path="/login" element={<LoginPage onLogin={handleLogin} />} />
+            <Route path="/signup" element={<SignupPage onLogin={handleLogin} />} />
+
             <Route
               path="/"
               element={
-                <Overview
-                  projects={projects}
-                  onCreateNewProject={handleCreateProjectClick}
-                />
+                <RequireAuth>
+                  <Overview
+                    projects={projects}
+                    onCreateNewProject={handleCreateProjectClick}
+                  />
+                </RequireAuth>
               }
             />
             <Route
               path="/project/:projectId"
               element={
-                <ProjectView
-                  projects={projects}
-                  onUpdateProject={handleUpdateProject}
-                />
+                <RequireAuth>
+                  <ProjectView
+                    projects={projects}
+                    onUpdateProject={handleUpdateProject}
+                  />
+                </RequireAuth>
               }
             />
-            <Route path="/ai-chat" element={<AIChat />} />
+            <Route path="/ai-chat" element={
+              <RequireAuth>
+                <AIChat />
+              </RequireAuth>
+            } />
             <Route path="/404" element={<NotFound />} />
             <Route path="*" element={<Navigate to="/404" replace />} />
           </Routes>
