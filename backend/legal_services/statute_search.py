@@ -124,7 +124,7 @@ async def search_amendment(request: AmendmentSearchRequest):
         try:
             # Get Tavily API key from environment
             import os
-            tavily_api_key = os.getenv("TAVILY_API_KEY", "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")
+            tavily_api_key = os.getenv("TAVILY_API_KEY")
             client = TavilyClient(tavily_api_key)
         except Exception as e:
             logger.error(f"Failed to initialize Tavily client: {e}")

@@ -31,6 +31,7 @@ from utils.firebase_storage import FirebaseStorageManager
 from vector_search.retrieval import get_vector_retrieval
 from rag_pipeline.search import TextbookRAGSearch
 from legal_services.statute_search import find_relevant_statutes, search_amendment, StatutesSearchRequest, AmendmentSearchRequest
+from legal_services.elitigation_search import search_elitigation_cases, ELitigationSearchRequest, search_and_scrape_elitigation_cases, ELitigationEnhancedRequest
 # in /vector-query route, where you call the vector store
 #from vector_search.vector_store import get_vector_store
 #vector_store = get_vector_store()
@@ -369,42 +370,8 @@ async def chat_with_legal_mind(request: ChatRequest):
                 max_statutes=5  # Limit for chat context
             )
             
-            if True: # hackathon override
-                statute_search_results = {
-  "status": "success",
-  "query": "Can walter sue for emotional distress after his personal data was used in advertising without consent?",
-  "total_statutes": 5,
-  "statutes": [
-    {
-      "name and section": "Personal Data Protection Act 2012 (2020 Rev Ed) s 48O",
-      "description": "Provides a right of private action for individuals who suffer loss or damage directly as a result of a contravention of the PDPA. The Court of Appeal in Michael Reed v Alex Bellingham confirmed that 'loss or damage' includes emotional distress.",
-      "source": "Developments in Data Privacy Litigation [2022] PDP Digest; Legal Due Diligence in a Digital and Data-Driven Economy [2023] SAL Prac"
-    },
-    {
-      "name and section": "Personal Data Protection Act 2012 (2020 Rev Ed) ss 13–17",
-      "description": "Consent Obligation — organisations must not collect, use, or disclose personal data without the individual's consent, unless exceptions apply.",
-      "source": "Legal Due Diligence in a Digital and Data-Driven Economy [2023] SAL Prac"
-    },
-    {
-      "name and section": "Personal Data Protection Act 2012 (2020 Rev Ed) s 18",
-      "description": "Purpose Limitation Obligation — personal data may only be used for purposes that a reasonable person would consider appropriate, and only for purposes consented to by the individual.",
-      "source": "Legal Due Diligence in a Digital and Data-Driven Economy [2023] SAL Prac"
-    },
-    {
-      "name and section": "Personal Data Protection Act 2012 (2020 Rev Ed) s 24",
-      "description": "Protection Obligation — organisations must make reasonable security arrangements to protect personal data in their possession or under their control.",
-      "source": "Legal Due Diligence in a Digital and Data-Driven Economy [2023] SAL Prac"
-    },
-    {
-      "name and section": "Personal Data Protection Act 2012 (2020 Rev Ed) s 26A–26E",
-      "description": "Data Breach Notification Obligation — organisations must notify the PDPC and, in certain cases, affected individuals of data breaches that pose significant harm.",
-      "source": "Legal Due Diligence in a Digital and Data-Driven Economy [2023] SAL Prac"
-    }
-  ]
-}
-
-            else:
-                statute_search_results = await find_relevant_statutes(statute_request)
+            
+            statute_search_results = await find_relevant_statutes(statute_request)
             
             # If statutes were found, search for amendments
             if (statute_search_results and 
@@ -422,25 +389,57 @@ async def chat_with_legal_mind(request: ChatRequest):
                         max_results_per_statute=3  # Limit for chat context
                     )
                     
-                    if True: # hackathon override
-                        # sleep awhile and log
-                        logger.info("⏳ Simulating amendment search delay...")
-                        await asyncio.sleep(2)  # Simulate delay
-                        amendment_search_results = json.load(open("legal_services/amendment_sample.json"))
-                    else:
-                        amendment_search_results = await search_amendment(amendment_request)
+                    
+                    amendment_search_results = await search_amendment(amendment_request)
+                
+                # Perform eLitigation search for testing (not included in conversation)
+                if (statute_search_results and 
+                    statute_search_results.get('status') == 'success' and 
+                    len(statute_search_results.get('statutes', [])) > 0):
+                    
+                    logger.info("🏛️ Performing eLitigation case search for testing")
+                    
+                    try:
+                        # Extract statute names for eLitigation search
+                        statute_names = [stat.get('name and section', '') for stat in statute_search_results['statutes'] if stat.get('name and section')]
+                        
+                        if statute_names:
+                            elitigation_request = ELitigationEnhancedRequest(
+                                names=statute_names,
+                                max_results=3,  # Limit for comprehensive context
+                                scrape_content=True,  # Enable content scraping
+                                user_id=request.user_id
+                            )
+                            
+                            elitigation_results = search_and_scrape_elitigation_cases(elitigation_request)
+                            logger.info(f"📋 Enhanced eLitigation search completed: {elitigation_results.get('total_found', 0)} cases found")
+                            
+                            # Log results for testing
+                            if elitigation_results.get('status') == 'success':
+                                logger.info(f"🔍 Top eLitigation cases: {[case.get('title', '')[:50] + '...' for case in elitigation_results.get('cases', [])[:3]]}")
+                                
+                                # Log if we got scraped content
+                                scraped_count = sum(1 for case in elitigation_results.get('cases', []) if case.get('full_content'))
+                                logger.info(f"📄 Successfully scraped content from {scraped_count} cases")
+
+                        else:
+                            elitigation_results = None
+                    
+                    except Exception as e:
+                        logger.warning(f"eLitigation search failed: {e}")
 
         except Exception as e:
             logger.warning(f"Statute/amendment search failed in chat: {e}")
             # Continue with chat even if statute search fails
         
-        # Create enhanced conversation context with statute and amendment information
-        conversation_context = _create_enhanced_conversation_context(
+        # Create enhanced conversation context with statute, amendment, and case information
+        conversation_context = _create_comprehensive_conversation_context(
             request.conversation_history,
             message,
             request.project_context,
             statute_search_results,
-            amendment_search_results
+            amendment_search_results,
+            elitigation_results if 'elitigation_results' in locals() else None
         )
         
         # Generate response using LLM
@@ -500,6 +499,20 @@ async def amendment_search_endpoint(request: AmendmentSearchRequest):
     Search for amendments to specified statutes using Tavily
     """
     return await search_amendment(request)
+
+@app.post("/elitigation-search")
+async def elitigation_search_endpoint(request: ELitigationSearchRequest):
+    """
+    Search for eLitigation cases related to specified statutes or legal concepts
+    """
+    return search_elitigation_cases(request)
+
+@app.post("/elitigation-search-enhanced")
+async def elitigation_search_enhanced_endpoint(request: ELitigationEnhancedRequest):
+    """
+    Enhanced eLitigation search that includes full case content scraping
+    """
+    return search_and_scrape_elitigation_cases(request)
 
 @app.post("/search")
 async def search_legal_content(request: SearchRequest):
@@ -978,6 +991,72 @@ def _create_enhanced_conversation_context(
             conversation_text += "\n\n**AMENDMENT STATUS:** No recent amendments found for the identified statutes.\n"
     
     conversation_text += "\n**INSTRUCTIONS:** Use the above statute and amendment information to provide accurate, up-to-date legal guidance. Reference specific statutes and their current status in your response.\n"
+    
+    return conversation_text
+
+def _create_comprehensive_conversation_context(
+    conversation_history: List[ChatMessage], 
+    current_message: str, 
+    project_context: Optional[Dict] = None,
+    statute_search_results: Optional[Dict] = None,
+    amendment_search_results: Optional[Dict] = None,
+    elitigation_results: Optional[Dict] = None
+) -> str:
+    """Create comprehensive conversation context with statutes, amendments, and case law"""
+    
+    # Start with the enhanced context (statutes + amendments)
+    conversation_text = _create_enhanced_conversation_context(
+        conversation_history, 
+        current_message, 
+        project_context,
+        statute_search_results,
+        amendment_search_results
+    )
+    
+    # Add eLitigation case results if available
+    if elitigation_results and elitigation_results.get('status') == 'success':
+        cases = elitigation_results.get('cases', [])
+        
+        if cases:
+            conversation_text += "\n\n**RELEVANT CASE LAW:**\n"
+            conversation_text += "The following Singapore court cases are relevant to your query:\n\n"
+            
+            for i, case in enumerate(cases, 1):
+                title = case.get('title', 'Unknown Case')
+                court = case.get('court', '')
+                year = case.get('case_year', '')
+                url = case.get('url', '')
+                snippet = case.get('snippet', '')
+                full_content = case.get('full_content', '')
+                
+                # Case header
+                conversation_text += f"**Case {i}: {title}**\n"
+                if court:
+                    conversation_text += f"   Court: {court}\n"
+                if year:
+                    conversation_text += f"   Year: {year}\n"
+                if url:
+                    conversation_text += f"   URL: {url}\n"
+                
+                # Case content - prioritize full content over snippet
+                if full_content and len(full_content.strip()) > 100:
+                    conversation_text += f"   **Full Case Content:**\n   {full_content}\n\n"
+                elif snippet:
+                    conversation_text += f"   **Summary:** {snippet}\n\n"
+                
+                # Add separator between cases
+                if i < len(cases):
+                    conversation_text += "---\n\n"
+            
+            conversation_text += "\n**CASE LAW ANALYSIS INSTRUCTIONS:** "
+            conversation_text += "Use the above case law to support your legal analysis. "
+            conversation_text += "Reference specific cases, their holdings, and how they apply to the current query. "
+            conversation_text += "Consider the court hierarchy and precedential value.\n"
+    
+    conversation_text += "\n**COMPREHENSIVE LEGAL GUIDANCE:** "
+    conversation_text += "You now have access to relevant statutes, recent amendments, and case law. "
+    conversation_text += "Provide a comprehensive legal analysis that integrates all available sources. "
+    conversation_text += "Structure your response to address statutory requirements, recent changes, and judicial interpretations.\n"
     
     return conversation_text
 
