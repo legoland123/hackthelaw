@@ -1,0 +1,51 @@
+{
+  "status": "success",
+  "statute_name": "Companies Act",
+  "section": "Section 216A",
+  "search_query": "\"Companies Act\" \"section 216A\" Singapore case law judgment court decision",
+  "total_found": 8,
+  "total_returned": 5,
+  "cases": [
+    {
+      "title": "Tam Tak Chuen v Eden Aesthetics Pte Ltd [2010] 2 SLR 667",
+      "url": "https://www.elitigation.sg/gd/s/2010_SGHC_1",
+      "snippet": "...the plaintiff brought this action under s 216A of the Companies Act seeking relief for oppression and unfair prejudice...",
+      "relevance_score": 0.95,
+      "case_year": "2010",
+      "court": "High Court"
+    },
+    {
+      "title": "Ng Kek Wee v Sim City Technology Ltd [2014] 4 SLR 723",
+      "url": "https://www.elitigation.sg/gd/s/2014_SGCA_2",
+      "snippet": "...This appeal concerns the application of s 216A of the Companies Act (Cap 50, 2006 Rev Ed) which provides for relief in cases of oppression...",
+      "relevance_score": 0.92,
+      "case_year": "2014",
+      "court": "Court of Appeal"
+    },
+    {
+      "title": "Over & Over Ltd v Bonvests Holdings Ltd [2010] 2 SLR 776",
+      "url": "https://www.elitigation.sg/gd/s/2010_SGHC_3",
+      "snippet": "...The plaintiff sought relief under s 216A of the Companies Act alleging oppressive conduct by the defendants...",
+      "relevance_score": 0.88,
+      "case_year": "2010",
+      "court": "High Court"
+    },
+    {
+      "title": "Lian Hwee Choo Phebe v Maxz Universal Development Group Pte Ltd [2010] SGHC 268",
+      "url": "https://www.elitigation.sg/gd/s/2010_SGHC_268",
+      "snippet": "...The petitioner filed this originating summons under s 216A of the Companies Act seeking relief for oppression and unfairly prejudicial conduct...",
+      "relevance_score": 0.85,
+      "case_year": "2010",
+      "court": "High Court"
+    },
+    {
+      "title": "Chong Chin Fook v Solomon Alliance Management Pte Ltd [2017] 1 SLR 348",
+      "url": "https://www.elitigation.sg/gd/s/2016_SGHC_4",
+      "snippet": "...This case involved an application under s 216A of the Companies Act for relief on the ground of oppression and unfair prejudice...",
+      "relevance_score": 0.82,
+      "case_year": "2017",
+      "court": "High Court"
+    }
+  ],
+  "timestamp": "2025-09-13T10:30:45.123456"
+}

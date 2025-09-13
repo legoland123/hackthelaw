@@ -29,7 +29,7 @@ class LLMProcessor:
         self.client = Groq(api_key=self.api_key)
         
         # Configuration for the model
-        self.model_name = "openai/gpt-oss-20b"
+        self.model_name = "openai/gpt-oss-120b"
         self.temperature = 0.1
         self.max_tokens = 8192
         
