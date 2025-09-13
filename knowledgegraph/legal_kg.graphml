@@ -1,0 +1,637 @@
+<?xml version='1.0' encoding='utf-8'?>
+<graphml xmlns="http://graphml.graphdrawing.org/xmlns" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://graphml.graphdrawing.org/xmlns http://graphml.graphdrawing.org/xmlns/1.0/graphml.xsd">
+  <key id="d6" for="edge" attr.name="relation" attr.type="string" />
+  <key id="d5" for="node" attr.name="outcome" attr.type="string" />
+  <key id="d4" for="node" attr.name="summary" attr.type="string" />
+  <key id="d3" for="node" attr.name="type" attr.type="string" />
+  <key id="d2" for="node" attr.name="provision" attr.type="string" />
+  <key id="d1" for="node" attr.name="name" attr.type="string" />
+  <key id="d0" for="node" attr.name="label" attr.type="string" />
+  <graph edgedefault="directed">
+    <node id="A1">
+      <data key="d0">Act</data>
+      <data key="d1">Personal Data Protection Act</data>
+    </node>
+    <node id="A2">
+      <data key="d0">Act</data>
+      <data key="d1">Personal Data Protection Act (Rev Ed)</data>
+    </node>
+    <node id="A3">
+      <data key="d0">Act</data>
+      <data key="d1">Personal Data Protection (Amendment) Act</data>
+    </node>
+    <node id="A4">
+      <data key="d0">Act</data>
+      <data key="d1">Data Protection Act</data>
+    </node>
+    <node id="A5">
+      <data key="d0">Act</data>
+      <data key="d1">Employersâ€™ Liability (Compulsory Insurance) Act</data>
+    </node>
+    <node id="A6">
+      <data key="d0">Act</data>
+      <data key="d1">Northern Ireland (Emergency Provisions) Act</data>
+    </node>
+    <node id="A7">
+      <data key="d0">Act</data>
+      <data key="d1">Personal Data (Privacy) Ordinance</data>
+    </node>
+    <node id="A8">
+      <data key="d0">Act</data>
+      <data key="d1">Human Rights Act</data>
+    </node>
+    <node id="A9">
+      <data key="d0">Act</data>
+      <data key="d1">Civil Procedure Rules (CPR)</data>
+    </node>
+    <node id="A10">
+      <data key="d0">Act</data>
+      <data key="d1">Charter of Fundamental Rights of the European Union</data>
+    </node>
+    <node id="A11">
+      <data key="d0">Act</data>
+      <data key="d1">Parliament and Council Directive 95/46/EC</data>
+    </node>
+    <node id="P1">
+      <data key="d0">Provision</data>
+      <data key="d2">3</data>
+      <data key="d3">Section</data>
+    </node>
+    <node id="P2">
+      <data key="d0">Provision</data>
+      <data key="d2">4(1)(b)</data>
+      <data key="d3">Section</data>
+    </node>
+    <node id="P3">
+      <data key="d0">Provision</data>
+      <data key="d2">13</data>
+      <data key="d3">Section</data>
+    </node>
+    <node id="P4">
+      <data key="d0">Provision</data>
+      <data key="d2">18</data>
+      <data key="d3">Section</data>
+    </node>
+    <node id="P5">
+      <data key="d0">Provision</data>
+      <data key="d2">29</data>
+      <data key="d3">Section</data>
+    </node>
+    <node id="P6">
+      <data key="d0">Provision</data>
+      <data key="d2">32(1)</data>
+      <data key="d3">Section</data>
+    </node>
+    <node id="P7">
+      <data key="d0">Provision</data>
+      <data key="d2">32(2)</data>
+      <data key="d3">Section</data>
+    </node>
+    <node id="P8">
+      <data key="d0">Provision</data>
+      <data key="d2">32(3)</data>
+      <data key="d3">Section</data>
+    </node>
+    <node id="P9">
+      <data key="d0">Provision</data>
+      <data key="d2">2(1)</data>
+      <data key="d3">Section</data>
+    </node>
+    <node id="P10">
+      <data key="d0">Provision</data>
+      <data key="d2">4</data>
+      <data key="d3">Section</data>
+    </node>
+    <node id="P11">
+      <data key="d0">Provision</data>
+      <data key="d2">4(1)</data>
+      <data key="d3">Section</data>
+    </node>
+    <node id="P12">
+      <data key="d0">Provision</data>
+      <data key="d2">11</data>
+      <data key="d3">Section</data>
+    </node>
+    <node id="P13">
+      <data key="d0">Provision</data>
+      <data key="d2">11(1)</data>
+      <data key="d3">Section</data>
+    </node>
+    <node id="P14">
+      <data key="d0">Provision</data>
+      <data key="d2">12</data>
+      <data key="d3">Section</data>
+    </node>
+    <node id="P15">
+      <data key="d0">Provision</data>
+      <data key="d2">27â€“32</data>
+      <data key="d3">Range</data>
+    </node>
+    <node id="P16">
+      <data key="d0">Provision</data>
+      <data key="d2">29(1)</data>
+      <data key="d3">Section</data>
+    </node>
+    <node id="P17">
+      <data key="d0">Provision</data>
+      <data key="d2">32</data>
+      <data key="d3">Section</data>
+    </node>
+    <node id="P18">
+      <data key="d0">Provision</data>
+      <data key="d2">32(3)(a)</data>
+      <data key="d3">Section</data>
+    </node>
+    <node id="P19">
+      <data key="d0">Provision</data>
+      <data key="d2">36â€“48</data>
+      <data key="d3">Range</data>
+    </node>
+    <node id="P20">
+      <data key="d0">Provision</data>
+      <data key="d2">43(1)</data>
+      <data key="d3">Section</data>
+    </node>
+    <node id="P21">
+      <data key="d0">Provision</data>
+      <data key="d2">48(1)</data>
+      <data key="d3">Section</data>
+    </node>
+    <node id="P22">
+      <data key="d0">Provision</data>
+      <data key="d2">50(3)</data>
+      <data key="d3">Section</data>
+    </node>
+    <node id="P23">
+      <data key="d0">Provision</data>
+      <data key="d2">50(3)(e)</data>
+      <data key="d3">Section</data>
+    </node>
+    <node id="P24">
+      <data key="d0">Provision</data>
+      <data key="d2">Pt IV</data>
+      <data key="d3">Part</data>
+    </node>
+    <node id="P25">
+      <data key="d0">Provision</data>
+      <data key="d2">Pt V</data>
+      <data key="d3">Part</data>
+    </node>
+    <node id="P26">
+      <data key="d0">Provision</data>
+      <data key="d2">Pt VI</data>
+      <data key="d3">Part</data>
+    </node>
+    <node id="P27">
+      <data key="d0">Provision</data>
+      <data key="d2">Pt VII</data>
+      <data key="d3">Part</data>
+    </node>
+    <node id="P28">
+      <data key="d0">Provision</data>
+      <data key="d2">Pt IX</data>
+      <data key="d3">Part</data>
+    </node>
+    <node id="P29">
+      <data key="d0">Provision</data>
+      <data key="d2">17(1)</data>
+      <data key="d3">Section</data>
+    </node>
+    <node id="P30">
+      <data key="d0">Provision</data>
+      <data key="d2">First Schedule Pt 4 para 3</data>
+      <data key="d3">Schedule</data>
+    </node>
+    <node id="P31">
+      <data key="d0">Provision</data>
+      <data key="d2">First Schedule Pt 4</data>
+      <data key="d3">Schedule</data>
+    </node>
+    <node id="P32">
+      <data key="d0">Provision</data>
+      <data key="d2">4(4)</data>
+      <data key="d3">Section</data>
+    </node>
+    <node id="P33">
+      <data key="d0">Provision</data>
+      <data key="d2">13</data>
+      <data key="d3">Section</data>
+    </node>
+    <node id="P34">
+      <data key="d0">Provision</data>
+      <data key="d2">13(1)</data>
+      <data key="d3">Section</data>
+    </node>
+    <node id="P35">
+      <data key="d0">Provision</data>
+      <data key="d2">15</data>
+      <data key="d3">Section</data>
+    </node>
+    <node id="P36">
+      <data key="d0">Provision</data>
+      <data key="d2">66(1)</data>
+      <data key="d3">Section</data>
+    </node>
+    <node id="P37">
+      <data key="d0">Provision</data>
+      <data key="d2">66(2)</data>
+      <data key="d3">Section</data>
+    </node>
+    <node id="P38">
+      <data key="d0">Provision</data>
+      <data key="d2">2</data>
+      <data key="d3">Section</data>
+    </node>
+    <node id="P39">
+      <data key="d0">Provision</data>
+      <data key="d2">4</data>
+      <data key="d3">Section</data>
+    </node>
+    <node id="P40">
+      <data key="d0">Provision</data>
+      <data key="d2">Schedule 1</data>
+      <data key="d3">Schedule</data>
+    </node>
+    <node id="P41">
+      <data key="d0">Provision</data>
+      <data key="d2">Schedule 1 Principle 4(1)</data>
+      <data key="d3">Principle</data>
+    </node>
+    <node id="P42">
+      <data key="d0">Provision</data>
+      <data key="d2">66(1)</data>
+      <data key="d3">Section</data>
+    </node>
+    <node id="P43">
+      <data key="d0">Provision</data>
+      <data key="d2">66(2)</data>
+      <data key="d3">Section</data>
+    </node>
+    <node id="P44">
+      <data key="d0">Provision</data>
+      <data key="d2">13</data>
+      <data key="d3">Section</data>
+    </node>
+    <node id="P45">
+      <data key="d0">Provision</data>
+      <data key="d2">Sch 1 Pt I art 8</data>
+      <data key="d3">Article</data>
+    </node>
+    <node id="P46">
+      <data key="d0">Provision</data>
+      <data key="d2">Pt 6 Practice Direction 6B para 3.1</data>
+      <data key="d3">Practice Direction</data>
+    </node>
+    <node id="P47">
+      <data key="d0">Provision</data>
+      <data key="d2">art 7</data>
+      <data key="d3">Article</data>
+    </node>
+    <node id="P48">
+      <data key="d0">Provision</data>
+      <data key="d2">art 8(1)</data>
+      <data key="d3">Article</data>
+    </node>
+    <node id="P49">
+      <data key="d0">Provision</data>
+      <data key="d2">art 47</data>
+      <data key="d3">Article</data>
+    </node>
+    <node id="P50">
+      <data key="d0">Provision</data>
+      <data key="d2">art 1</data>
+      <data key="d3">Article</data>
+    </node>
+    <node id="P51">
+      <data key="d0">Provision</data>
+      <data key="d2">art 23(1)</data>
+      <data key="d3">Article</data>
+    </node>
+    <node id="c1">
+      <data key="d0">Case</data>
+      <data key="d1">Reed v Bellingham</data>
+      <data key="d4">Concerned the scope and application of the Personal Data Protection Act 2012 (Singapore), including obligations of data controllers under various sections (e.g. consent, purpose limitation, data security, access rights). The case dealt with statutory interpretation and how the Act interacts with amendments and revised editions.</data>
+      <data key="d5">The Court clarified the proper construction of the PDPA provisions and dismissed parts of the appellant’s arguments, affirming the respondent’s position on compliance obligations.</data>
+    </node>
+    <node id="c2">
+      <data key="d0">Case</data>
+      <data key="d1">Tsang Po Mann v Tsang Ka Kit</data>
+      <data key="d4">Focused on the definition of a “data user” under the Hong Kong Personal Data (Privacy) Ordinance and obligations not to contravene data protection principles without prescribed consent. Addressed liability for damage, including emotional distress, under section 66.</data>
+      <data key="d5">The Court found that a data user who contravenes PDPO provisions can be liable for damages, including injury to feelings, and clarified the scope of liability and protections afforded by the Ordinance.</data>
+    </node>
+    <node id="C3">
+      <data key="d0">Case</data>
+      <data key="d1">Vidal-Hall v Google Inc [2016] QB 1003</data>
+      <data key="d4">Claimants alleged that Google unlawfully tracked their internet usage, constituting misuse of private information, breach of confidence, and breach of the UK Data Protection Act 1998. Central issues included whether misuse of private information was a tort, whether damages under s.13 DPA were limited to pecuniary loss, and whether “personal data” was engaged.</data>
+      <data key="d5">Court of Appeal held that misuse of private information is a tort; “damage” under the DPA includes non-pecuniary loss such as distress; and section 13(2) of the DPA must be disapplied to comply with EU law. Appeal dismissed, allowing claims for misuse of private information and breach of data protection to proceed.</data>
+    </node>
+    <node id="C1" />
+    <node id="C2" />
+    <edge source="P1" target="A1">
+      <data key="d6">partOf</data>
+    </edge>
+    <edge source="P2" target="A1">
+      <data key="d6">partOf</data>
+    </edge>
+    <edge source="P3" target="A1">
+      <data key="d6">partOf</data>
+    </edge>
+    <edge source="P4" target="A1">
+      <data key="d6">partOf</data>
+    </edge>
+    <edge source="P5" target="A1">
+      <data key="d6">partOf</data>
+    </edge>
+    <edge source="P6" target="A1">
+      <data key="d6">partOf</data>
+    </edge>
+    <edge source="P7" target="A1">
+      <data key="d6">partOf</data>
+    </edge>
+    <edge source="P8" target="A1">
+      <data key="d6">partOf</data>
+    </edge>
+    <edge source="P9" target="A1">
+      <data key="d6">partOf</data>
+    </edge>
+    <edge source="P10" target="A1">
+      <data key="d6">partOf</data>
+    </edge>
+    <edge source="P11" target="A1">
+      <data key="d6">partOf</data>
+    </edge>
+    <edge source="P12" target="A1">
+      <data key="d6">partOf</data>
+    </edge>
+    <edge source="P13" target="A1">
+      <data key="d6">partOf</data>
+    </edge>
+    <edge source="P14" target="A1">
+      <data key="d6">partOf</data>
+    </edge>
+    <edge source="P15" target="A1">
+      <data key="d6">partOf</data>
+    </edge>
+    <edge source="P16" target="A1">
+      <data key="d6">partOf</data>
+    </edge>
+    <edge source="P17" target="A1">
+      <data key="d6">partOf</data>
+    </edge>
+    <edge source="P18" target="A1">
+      <data key="d6">partOf</data>
+    </edge>
+    <edge source="P19" target="A1">
+      <data key="d6">partOf</data>
+    </edge>
+    <edge source="P20" target="A1">
+      <data key="d6">partOf</data>
+    </edge>
+    <edge source="P21" target="A1">
+      <data key="d6">partOf</data>
+    </edge>
+    <edge source="P22" target="A1">
+      <data key="d6">partOf</data>
+    </edge>
+    <edge source="P23" target="A1">
+      <data key="d6">partOf</data>
+    </edge>
+    <edge source="P24" target="A1">
+      <data key="d6">partOf</data>
+    </edge>
+    <edge source="P25" target="A1">
+      <data key="d6">partOf</data>
+    </edge>
+    <edge source="P26" target="A1">
+      <data key="d6">partOf</data>
+    </edge>
+    <edge source="P27" target="A1">
+      <data key="d6">partOf</data>
+    </edge>
+    <edge source="P28" target="A1">
+      <data key="d6">partOf</data>
+    </edge>
+    <edge source="P29" target="A2">
+      <data key="d6">partOf</data>
+    </edge>
+    <edge source="P30" target="A2">
+      <data key="d6">partOf</data>
+    </edge>
+    <edge source="P31" target="A3">
+      <data key="d6">partOf</data>
+    </edge>
+    <edge source="P32" target="A4">
+      <data key="d6">partOf</data>
+    </edge>
+    <edge source="P33" target="A4">
+      <data key="d6">partOf</data>
+    </edge>
+    <edge source="P34" target="A4">
+      <data key="d6">partOf</data>
+    </edge>
+    <edge source="P35" target="A6">
+      <data key="d6">partOf</data>
+    </edge>
+    <edge source="P36" target="A7">
+      <data key="d6">partOf</data>
+    </edge>
+    <edge source="P37" target="A7">
+      <data key="d6">partOf</data>
+    </edge>
+    <edge source="P38" target="A7">
+      <data key="d6">partOf</data>
+    </edge>
+    <edge source="P39" target="A7">
+      <data key="d6">partOf</data>
+    </edge>
+    <edge source="P40" target="A7">
+      <data key="d6">partOf</data>
+    </edge>
+    <edge source="P41" target="A7">
+      <data key="d6">partOf</data>
+    </edge>
+    <edge source="P42" target="A7">
+      <data key="d6">partOf</data>
+    </edge>
+    <edge source="P43" target="A7">
+      <data key="d6">partOf</data>
+    </edge>
+    <edge source="P44" target="A4">
+      <data key="d6">partOf</data>
+    </edge>
+    <edge source="P45" target="A8">
+      <data key="d6">partOf</data>
+    </edge>
+    <edge source="P46" target="A9">
+      <data key="d6">partOf</data>
+    </edge>
+    <edge source="P47" target="A10">
+      <data key="d6">partOf</data>
+    </edge>
+    <edge source="P48" target="A10">
+      <data key="d6">partOf</data>
+    </edge>
+    <edge source="P49" target="A10">
+      <data key="d6">partOf</data>
+    </edge>
+    <edge source="P50" target="A11">
+      <data key="d6">partOf</data>
+    </edge>
+    <edge source="P51" target="A11">
+      <data key="d6">partOf</data>
+    </edge>
+    <edge source="C3" target="P44">
+      <data key="d6">cites</data>
+    </edge>
+    <edge source="C3" target="P45">
+      <data key="d6">cites</data>
+    </edge>
+    <edge source="C3" target="P46">
+      <data key="d6">cites</data>
+    </edge>
+    <edge source="C3" target="P47">
+      <data key="d6">cites</data>
+    </edge>
+    <edge source="C3" target="P48">
+      <data key="d6">cites</data>
+    </edge>
+    <edge source="C3" target="P49">
+      <data key="d6">cites</data>
+    </edge>
+    <edge source="C3" target="P50">
+      <data key="d6">cites</data>
+    </edge>
+    <edge source="C3" target="P51">
+      <data key="d6">cites</data>
+    </edge>
+    <edge source="C1" target="P1">
+      <data key="d6">cites</data>
+    </edge>
+    <edge source="C1" target="P2">
+      <data key="d6">cites</data>
+    </edge>
+    <edge source="C1" target="P3">
+      <data key="d6">cites</data>
+    </edge>
+    <edge source="C1" target="P4">
+      <data key="d6">cites</data>
+    </edge>
+    <edge source="C1" target="P5">
+      <data key="d6">cites</data>
+    </edge>
+    <edge source="C1" target="P6">
+      <data key="d6">cites</data>
+    </edge>
+    <edge source="C1" target="P7">
+      <data key="d6">cites</data>
+    </edge>
+    <edge source="C1" target="P8">
+      <data key="d6">cites</data>
+    </edge>
+    <edge source="C1" target="P9">
+      <data key="d6">cites</data>
+    </edge>
+    <edge source="C1" target="P10">
+      <data key="d6">cites</data>
+    </edge>
+    <edge source="C1" target="P11">
+      <data key="d6">cites</data>
+    </edge>
+    <edge source="C1" target="P12">
+      <data key="d6">cites</data>
+    </edge>
+    <edge source="C1" target="P13">
+      <data key="d6">cites</data>
+    </edge>
+    <edge source="C1" target="P14">
+      <data key="d6">cites</data>
+    </edge>
+    <edge source="C1" target="P15">
+      <data key="d6">cites</data>
+    </edge>
+    <edge source="C1" target="P16">
+      <data key="d6">cites</data>
+    </edge>
+    <edge source="C1" target="P17">
+      <data key="d6">cites</data>
+    </edge>
+    <edge source="C1" target="P18">
+      <data key="d6">cites</data>
+    </edge>
+    <edge source="C1" target="P19">
+      <data key="d6">cites</data>
+    </edge>
+    <edge source="C1" target="P20">
+      <data key="d6">cites</data>
+    </edge>
+    <edge source="C1" target="P21">
+      <data key="d6">cites</data>
+    </edge>
+    <edge source="C1" target="P22">
+      <data key="d6">cites</data>
+    </edge>
+    <edge source="C1" target="P23">
+      <data key="d6">cites</data>
+    </edge>
+    <edge source="C1" target="P24">
+      <data key="d6">cites</data>
+    </edge>
+    <edge source="C1" target="P25">
+      <data key="d6">cites</data>
+    </edge>
+    <edge source="C1" target="P26">
+      <data key="d6">cites</data>
+    </edge>
+    <edge source="C1" target="P27">
+      <data key="d6">cites</data>
+    </edge>
+    <edge source="C1" target="P28">
+      <data key="d6">cites</data>
+    </edge>
+    <edge source="C1" target="P29">
+      <data key="d6">cites</data>
+    </edge>
+    <edge source="C1" target="P30">
+      <data key="d6">cites</data>
+    </edge>
+    <edge source="C1" target="P31">
+      <data key="d6">cites</data>
+    </edge>
+    <edge source="C1" target="P32">
+      <data key="d6">cites</data>
+    </edge>
+    <edge source="C1" target="P33">
+      <data key="d6">cites</data>
+    </edge>
+    <edge source="C1" target="P34">
+      <data key="d6">cites</data>
+    </edge>
+    <edge source="C1" target="P35">
+      <data key="d6">cites</data>
+    </edge>
+    <edge source="C1" target="P36">
+      <data key="d6">cites</data>
+    </edge>
+    <edge source="C1" target="P37">
+      <data key="d6">cites</data>
+    </edge>
+    <edge source="C2" target="P38">
+      <data key="d6">cites</data>
+    </edge>
+    <edge source="C2" target="P39">
+      <data key="d6">cites</data>
+    </edge>
+    <edge source="C2" target="P40">
+      <data key="d6">cites</data>
+    </edge>
+    <edge source="C2" target="P41">
+      <data key="d6">cites</data>
+    </edge>
+    <edge source="C2" target="P42">
+      <data key="d6">cites</data>
+    </edge>
+    <edge source="C2" target="P43">
+      <data key="d6">cites</data>
+    </edge>
+  </graph>
+</graphml>

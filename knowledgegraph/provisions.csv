@@ -1,0 +1,52 @@
+﻿id,actId,provision,type
+P1,A1,3,Section
+P2,A1,4(1)(b),Section
+P3,A1,13,Section
+P4,A1,18,Section
+P5,A1,29,Section
+P6,A1,32(1),Section
+P7,A1,32(2),Section
+P8,A1,32(3),Section
+P9,A1,2(1),Section
+P10,A1,4,Section
+P11,A1,4(1),Section
+P12,A1,11,Section
+P13,A1,11(1),Section
+P14,A1,12,Section
+P15,A1,27–32,Range
+P16,A1,29(1),Section
+P17,A1,32,Section
+P18,A1,32(3)(a),Section
+P19,A1,36–48,Range
+P20,A1,43(1),Section
+P21,A1,48(1),Section
+P22,A1,50(3),Section
+P23,A1,50(3)(e),Section
+P24,A1,Pt IV,Part
+P25,A1,Pt V,Part
+P26,A1,Pt VI,Part
+P27,A1,Pt VII,Part
+P28,A1,Pt IX,Part
+P29,A2,17(1),Section
+P30,A2,First Schedule Pt 4 para 3,Schedule
+P31,A3,First Schedule Pt 4,Schedule
+P32,A4,4(4),Section
+P33,A4,13,Section
+P34,A4,13(1),Section
+P35,A6,15,Section
+P36,A7,66(1),Section
+P37,A7,66(2),Section
+P38,A7,2,Section
+P39,A7,4,Section
+P40,A7,Schedule 1,Schedule
+P41,A7,Schedule 1 Principle 4(1),Principle
+P42,A7,66(1),Section
+P43,A7,66(2),Section
+P44,A4,13,Section
+P45,A8,Sch 1 Pt I art 8,Article
+P46,A9,Pt 6 Practice Direction 6B para 3.1,Practice Direction
+P47,A10,art 7,Article
+P48,A10,art 8(1),Article
+P49,A10,art 47,Article
+P50,A11,art 1,Article
+P51,A11,art 23(1),Article
