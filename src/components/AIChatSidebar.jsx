@@ -6,32 +6,14 @@ const AIChatSidebar = () => {
 
     return (
         <aside className="sidebar ai-chat-sidebar">
-            <div className="sidebar-back-button" onClick={() => navigate('/')}>
+            <h4 className="sidebar-back-button" onClick={() => navigate('/')}>
                 <span className="back-arrow">←</span>
                 <span className="back-text">Back to Projects</span>
-            </div>
-
-            <div className="sidebar-header">
-                <h3>LIT Legal Mind</h3>
-                <p className="sidebar-stats">
-                    Your intelligent legal companion
-                </p>
-            </div>
-
-            <nav className="sidebar-nav">
-                <ul>
-                    <li>
-                        <button className="active">
-                            <span className="icon">💬</span>
-                            <span>Chat</span>
-                        </button>
-                    </li>
-                </ul>
-            </nav>
+            </h4>
 
             <div className="sidebar-footer">
                 <div className="sidebar-info">
-                    <h4>AI Capabilities</h4>
+                    <span>Capabilities:</span>
                     <div className="capability-item">
                         <span className="capability-icon">📋</span>
                         <span>Contract Analysis</span>

@@ -1,98 +1,122 @@
-import React from 'react';
-import { parseDocumentReferences } from '../utils/documentReferenceParser';
+// src/components/MessageFormatter.jsx
+import React, { useMemo } from "react";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";                 // tables, lists, strikethrough, task-lists
+import rehypeSanitize, { defaultSchema } from "rehype-sanitize";
+import "../styles/chat-markdown.css";
 
-const MessageFormatter = ({ content, documents, onDocumentClick }) => {
-    if (!content) return null;
-
-    // Function to process bold text within a string
-    const processBoldText = (text) => {
-        if (!text.includes('**')) return text;
-
-        const parts = text.split('**');
-        const processedParts = [];
-
-        for (let i = 0; i < parts.length; i++) {
-            const part = parts[i];
-
-            // Skip empty parts
-            if (part === '') continue;
-
-            // If this is an odd-indexed part (should be bold), wrap it in strong
-            if (i % 2 === 1) {
-                processedParts.push(<strong key={i}>{part}</strong>);
-            } else {
-                processedParts.push(part);
-            }
-        }
-
-        return processedParts.length > 0 ? processedParts : text;
-    };
-
-    // Function to process document references
-    const processDocumentReferences = (text) => {
-        if (!documents || documents.length === 0) {
-            return processBoldText(text);
-        }
-
-        const parsedParts = parseDocumentReferences(text, documents, onDocumentClick);
-        return parsedParts.map((part, partIndex) => {
-            if (React.isValidElement(part)) {
-                return part;
-            } else {
-                return processBoldText(part);
-            }
-        });
-    };
-
-    // Split content into lines
-    const lines = content.split('\n');
-
-    return (
-        <div className="formatted-message">
-            {lines.map((line, index) => {
-                const indentation = line.length - line.trimStart().length;
-                const trimmedLine = line.trim();
-
-                const style = {
-                    paddingLeft: `${indentation * 0.75}em`,
-                };
-
-                const bulletMatch = trimmedLine.match(/^[•*-]\s+(.*)/);
-                if (bulletMatch) {
-                    const bulletContent = bulletMatch[1];
-                    return (
-                        <div key={index} className="message-bullet-container" style={style}>
-                            <div className="message-bullet">
-                                {processDocumentReferences(bulletContent)}
-                            </div>
-                        </div>
-                    );
-                }
-
-                const numberedMatch = trimmedLine.match(/^(\d+\.)\s*(.*)/);
-                if (numberedMatch) {
-                    const listNumber = numberedMatch[1];
-                    const listContent = numberedMatch[2];
-                    return (
-                        <div key={index} className="message-numbered" style={style}>
-                            <span className="message-list-number">{listNumber}</span>
-                            <span>{processDocumentReferences(listContent)}</span>
-                        </div>
-                    );
-                }
-
-                if (trimmedLine === '') {
-                    return <div key={index} className="message-spacer"></div>;
-                }
-
-                return (
-                    <div key={index} className="message-line">
-                        {processDocumentReferences(line)}
-                    </div>
-                );
-            })}
-        </div>
-    );
+/**
+ * Allow a few extra attrs that are useful in chat markdown.
+ * (We keep sanitize on to prevent XSS.)
+ */
+const schema = {
+  ...defaultSchema,
+  attributes: {
+    ...defaultSchema.attributes,
+    table: [...(defaultSchema.attributes?.table || []), ["className"]],
+    th:    [...(defaultSchema.attributes?.th || []),    ["align"]],
+    td:    [...(defaultSchema.attributes?.td || []),    ["align"]],
+    code:  [...(defaultSchema.attributes?.code || []),  ["className"]],
+  },
 };
 
-export default MessageFormatter; 
+/**
+ * Transform inline project document mentions into markdown links that we can
+ * intercept and turn into clickable doc-open actions.
+ *
+ * Supported patterns inside content (choose whichever you want to output from your backend):
+ *  - [[doc:ABC123]] or [[document:ABC123]]
+ *  - {doc:ABC123}  (curly variant)
+ *
+ * They’ll render as links; clicking them will call onDocumentClick(ABC123).
+ */
+function transformDocMentions(raw, documents) {
+  if (!raw) return "";
+  const docsById =
+    Array.isArray(documents)
+      ? Object.fromEntries(documents.map(d => [String(d.id), d]))
+      : {};
+
+  const replaceOne = (id) => {
+    const doc = docsById[String(id)];
+    const title =
+      doc?.title ||
+      doc?.fileInfo?.fileName ||
+      `Document ${String(id)}`;
+    // We emit a "protocol" the renderer can catch: doc://<id>
+    return `[${title}](doc://${String(id)})`;
+  };
+
+  let out = raw;
+
+  // [[doc:ID]] or [[document:ID]]
+  out = out.replace(/\[\[\s*(doc|document)\s*:\s*([a-zA-Z0-9_-]+)\s*\]\]/g,
+    (_m, _tag, id) => replaceOne(id)
+  );
+
+  // {doc:ID}
+  out = out.replace(/\{\s*doc\s*:\s*([a-zA-Z0-9_-]+)\s*\}/g,
+    (_m, id) => replaceOne(id)
+  );
+
+  return out;
+}
+
+export default function MessageFormatter({
+  content,
+  documents,
+  onDocumentClick,
+}) {
+  const safeSchema = useMemo(() => schema, []);
+
+  const text = useMemo(
+    () => transformDocMentions(content || "", documents),
+    [content, documents]
+  );
+
+  return (
+    <div className="md-body">
+      <ReactMarkdown
+        remarkPlugins={[remarkGfm]}
+        rehypePlugins={[[rehypeSanitize, safeSchema]]}
+        components={{
+          // Slightly smaller headings so they sit nicely in chat bubbles
+          h1: ({node, ...props}) => <h3 {...props} />,
+          h2: ({node, ...props}) => <h4 {...props} />,
+          h3: ({node, ...props}) => <h5 {...props} />,
+
+          table: ({node, ...props}) => <table className="md-table" {...props} />,
+
+          // Intercept doc:// links and route them to the project's viewer
+          a: ({node, href, children, ...props}) => {
+            if (href && href.startsWith("doc://") && onDocumentClick) {
+              const id = href.replace("doc://", "");
+              return (
+                <button
+                  type="button"
+                  className="doc-ref-link"
+                  onClick={() => onDocumentClick(id)}
+                  title="Open document"
+                >
+                  {children}
+                </button>
+              );
+            }
+            // normal external links open in new tab
+            return <a href={href} target="_blank" rel="noreferrer noopener" {...props}>{children}</a>;
+          },
+
+          // Make fenced code blocks look tidy
+          code: ({node, inline, className, children, ...props}) =>
+            inline ? (
+              <code className={className} {...props}>{children}</code>
+            ) : (
+              <pre className="md-pre"><code className={className} {...props}>{children}</code></pre>
+            ),
+        }}
+      >
+        {text}
+      </ReactMarkdown>
+    </div>
+  );
+}

@@ -1,6 +1,18 @@
-import React from 'react';
-import { Link, useLocation } from 'react-router-dom';
+// src/components/Breadcrumb.jsx
+import { Link as RouterLink } from 'react-router-dom';
 
+export default function Breadcrumb({ projectName }) {
+  return (
+    <nav className="breadcrumbs" aria-label="breadcrumbs">
+      <RouterLink to="/">Overview</RouterLink>
+      <span className="sep">/</span>
+      <span className="current">{projectName}</span>
+    </nav>
+  );
+}
+
+
+/*
 const Breadcrumb = ({ projectName }) => {
     const location = useLocation();
 
@@ -55,4 +67,4 @@ const Breadcrumb = ({ projectName }) => {
     );
 };
 
-export default Breadcrumb; 
+export default Breadcrumb; */

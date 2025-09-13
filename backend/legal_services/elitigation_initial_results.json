@@ -1,0 +1,49 @@
+{
+  "status": "success",
+  "search_names": [
+    "Personal Data Protection Act 2012 (2020 Rev Ed) s 48O",
+    "Personal Data Protection Act 2012 (2020 Rev Ed) ss 13\u201317",
+    "Personal Data Protection Act 2012 (2020 Rev Ed) s 18",
+    "Personal Data Protection Act 2012 (2020 Rev Ed) s 24",
+    "Personal Data Protection Act 2012 (2020 Rev Ed) s 26A\u201326E"
+  ],
+  "search_queries": [
+    "\"Personal Data Protection Act 2012 (2020 Rev Ed) s 48O\" Singapore case law judgment court decision",
+    "\"Personal Data Protection Act 2012 (2020 Rev Ed) ss 13\u201317\" Singapore case law judgment court decision",
+    "\"Personal Data Protection Act 2012 (2020 Rev Ed) s 18\" Singapore case law judgment court decision",
+    "\"Personal Data Protection Act 2012 (2020 Rev Ed) s 24\" Singapore case law judgment court decision",
+    "\"Personal Data Protection Act 2012 (2020 Rev Ed) s 26A\u201326E\" Singapore case law judgment court decision"
+  ],
+  "total_found": 10,
+  "total_returned": 3,
+  "cases": [
+    {
+      "title": "IN THE COURT OF APPEAL OF THE REPUBLIC OF SINGAPORE - eLitigation",
+      "url": "https://www.elitigation.sg/gd/gd/2022_SGCA_60/pdf",
+      "snippet": "had contravened ss 13 and 18 of the PDPA (which fall within Part IV) in respect of the appellant\u2019s data but held that the appellant had not suffered any \u201closs or damage\u201d within the meaning of s 32(1)....",
+      "relevance_score": 0.8687726000000001,
+      "case_year": null,
+      "court": "Court Of Appeal",
+      "full_content": null
+    },
+    {
+      "title": "[2025] SGHC 173 - Singapore Kindness Movement",
+      "url": "https://www.elitigation.sg/gd/s/2025_SGHC_173",
+      "snippet": "19 As for loss or damage, the DJ observed, citing Reed, Michael v Bellingham, Alex (Attorney-General, intervener)  2 SLR 1156 (\u201cReed\u201d), that, for claims made under s 48O of the PDPA, there had to be a...",
+      "relevance_score": 0.8464752000000001,
+      "case_year": "2025",
+      "court": "Court Of Appeal",
+      "full_content": null
+    },
+    {
+      "title": "[2021] SGHC 125 - elitigation.sg",
+      "url": "https://www.elitigation.sg/gd/s/2021_SGHC_125",
+      "snippet": "1 The Personal Data Protection Act 2012 (Act 26 of 2012) (\u201cPDPA\u201d) governs the collection, use and disclosure of personal data by organisations. The regulatory authority, the Personal Data Protection C...",
+      "relevance_score": 0.8177694,
+      "case_year": "2021",
+      "court": null,
+      "full_content": null
+    }
+  ],
+  "timestamp": "2025-09-14T02:48:54.481416"
+}

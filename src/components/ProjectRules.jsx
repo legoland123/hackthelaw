@@ -1,163 +1,76 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
+import { projectServices } from '../firebase/services';
 
 const ProjectRules = ({ projectId, projectName }) => {
-    const [rules, setRules] = useState([]);
-    const [newRule, setNewRule] = useState('');
-    const [loading, setLoading] = useState(false);
+  const [ruleText, setRuleText] = useState('');
+  const [rules, setRules] = useState([]);
 
-    // Load existing rules for this project
-    useEffect(() => {
-        loadProjectRules();
-    }, [projectId]);
+  const addRule = () => {
+    const t = ruleText.trim();
+    if (!t) return;
+    setRules(prev => [...prev, { id: Date.now(), text: t }]);
+    setRuleText('');
+  };
 
-    const loadProjectRules = async () => {
-        try {
-            setLoading(true);
-            // TODO: Replace with actual API call to load project rules
-            // For now, we'll use localStorage as a simple storage
-            const storedRules = localStorage.getItem(`project_rules_${projectId}`);
-            if (storedRules) {
-                setRules(JSON.parse(storedRules));
-            }
-        } catch (error) {
-            console.error('Failed to load project rules:', error);
-        } finally {
-            setLoading(false);
-        }
-    };
+  const removeRule = (id) => setRules(prev => prev.filter(r => r.id !== id));
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        if (!newRule.trim()) return;
-
-        try {
-            const rule = {
-                id: Date.now(),
-                text: newRule.trim(),
-                createdAt: new Date().toISOString(),
-                projectId: projectId
-            };
-
-            const updatedRules = [...rules, rule];
-            setRules(updatedRules);
-            setNewRule('');
-
-            // TODO: Replace with actual API call to save project rules
-            // For now, we'll use localStorage as a simple storage
-            localStorage.setItem(`project_rules_${projectId}`, JSON.stringify(updatedRules));
-
-            console.log('Rule added:', rule);
-        } catch (error) {
-            console.error('Failed to add rule:', error);
-            alert('Failed to add rule. Please try again.');
-        }
-    };
-
-    const handleDeleteRule = async (ruleId) => {
-        try {
-            const updatedRules = rules.filter(rule => rule.id !== ruleId);
-            setRules(updatedRules);
-
-            // TODO: Replace with actual API call to delete project rule
-            localStorage.setItem(`project_rules_${projectId}`, JSON.stringify(updatedRules));
-
-            console.log('Rule deleted:', ruleId);
-        } catch (error) {
-            console.error('Failed to delete rule:', error);
-            alert('Failed to delete rule. Please try again.');
-        }
-    };
-
-    const formatDate = (dateString) => {
-        return new Date(dateString).toLocaleDateString('en-US', {
-            year: 'numeric',
-            month: 'short',
-            day: 'numeric',
-            hour: '2-digit',
-            minute: '2-digit'
-        });
-    };
-
-    if (loading) {
-        return (
-            <div className="rules-container">
-                <div className="loading">
-                    <div className="spinner"></div>
-                    Loading project rules...
-                </div>
-            </div>
-        );
+  const saveRules = async () => {
+    try {
+      // persist on project doc if you like
+      await projectServices.updateProject(projectId, { rules });
+      alert('Rules saved.');
+    } catch (e) {
+      console.error(e);
+      alert('Failed to save rules (see console).');
     }
+  };
 
-    return (
-        <div className="rules-container">
-            <div className="rules-header">
-                <h1>LLM Rules</h1>
-                <p className="rules-description">
-                    Define rules and guidelines.
-                </p>
-            </div>
-
-            <div className="rules-content">
-                <form onSubmit={handleSubmit} className="rules-form">
-                    <div className="form-group">
-                        <label htmlFor="newRule" className="form-label">
-                            Add a new rule:
-                        </label>
-                        <textarea
-                            id="newRule"
-                            className="form-textarea"
-                            value={newRule}
-                            onChange={(e) => setNewRule(e.target.value)}
-                            placeholder="(1) Ensure that it is given a fair opportunity to remedy any alleged breach before the contract is terminated, typically through a clearly defined cure period;
-(2) Protect itself from wrongful or arbitrary termination by the main contractor, ideally by including a right to compensation or recovery of costs if terminated without cause; and
-(3) Retain a balanced right to terminate the subcontract if the main contractor fails to make timely payment or causes prolonged suspension, to safeguard Sanitec’s cashflow and project continuity."
-                            rows="4"
-                            required
-                        />
-                    </div>
-                    <div className="form-actions">
-                        <button
-                            type="submit"
-                            className="btn btn-primary"
-                            disabled={false}
-                        >
-                            Add Rule
-                        </button>
-                    </div>
-                </form>
-
-                <div className="rules-list">
-                    <h3>Current Rules ({rules.length})</h3>
-                    {rules.length === 0 ? (
-                        <div className="empty-rules">
-                            <p>No rules defined yet. Add your first rule above.</p>
-                        </div>
-                    ) : (
-                        <div className="rules-items">
-                            {rules.map((rule) => (
-                                <div key={rule.id} className="rule-item">
-                                    <div className="rule-content">
-                                        <p className="rule-text">{rule.text}</p>
-                                        <span className="rule-date">
-                                            Added: {formatDate(rule.createdAt)}
-                                        </span>
-                                    </div>
-                                    <button
-                                        className="btn btn-danger rule-delete"
-                                        onClick={() => handleDeleteRule(rule.id)}
-                                        title="Delete rule"
-                                    >
-                                        🗑️
-                                    </button>
-                                </div>
-                            ))}
-                        </div>
-                    )}
-                </div>
-            </div>
+  return (
+    <div className="rules-page">
+      <div className="page-header">
+        <div>
+          <h1 className="title">LLM Rules</h1>
+          <p className="subtitle">Define rules and guardrails for “{projectName}”.</p>
         </div>
-    );
+        <div className="right">
+          <button className="button primary" onClick={saveRules} disabled={!rules.length}>Save Rules</button>
+        </div>
+      </div>
+
+      <div className="card rules-grid">
+        <div className="left">
+          <label className="form-field">
+            <span>Add a new rule</span>
+            <textarea
+              rows={6}
+              value={ruleText}
+              onChange={e => setRuleText(e.target.value)}
+              placeholder={`(1) Ensure the model provides a fair opportunity to remedy any alleged breach before termination.\n(2) Avoid generating personally identifiable information.`}
+            />
+          </label>
+          <button className="button primary" onClick={addRule}>Add Rule</button>
+        </div>
+
+        <div className="right">
+          <div className="pane-header">
+            <h2>Current Rules ({rules.length})</h2>
+          </div>
+          {!rules.length ? (
+            <div className="empty">No rules defined yet. Add your first rule on the left.</div>
+          ) : (
+            <ul className="rules-list">
+              {rules.map(r => (
+                <li key={r.id} className="rule-row">
+                  <div className="txt">{r.text}</div>
+                  <button className="button danger" onClick={() => removeRule(r.id)}>Remove</button>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+      </div>
+    </div>
+  );
 };
 
-export default ProjectRules; 
+export default ProjectRules;

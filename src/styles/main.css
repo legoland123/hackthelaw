@@ -5,8 +5,9 @@
 
 /* Import base styles */
 @import './base.css';
+@import './overview.css';    /* if you have it */
 
-/* Import component-specific styles */
+/* Import component-specific styles 
 @import './header.css';
 @import './sidebar.css';
 @import './timeline.css';
@@ -18,3 +19,91 @@
 @import './ai-chat.css';
 @import './modal.css';
 @import './rules.css';
+*/
+
+/* --- Chat layout hardening --- */
+.chat-container {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* header row with Clear / Export on the right */
+.chat-header-compact {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.project-chat-info h3 {
+  margin: 0 0 4px 0;
+}
+
+/* give the messages area actual height and scrolling */
+.chat-messages {
+  flex: 1 1 auto;
+  min-height: 280px;          /* ensures it’s visible even when empty */
+  max-height: calc(100vh - 320px);
+  overflow: auto;
+  padding: 12px 14px;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 12px;
+}
+
+/* message bubbles */
+.message {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.message .message-avatar {
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.message .message-content {
+  background: rgba(255,255,255,0.05);
+  border-radius: 10px;
+  padding: 10px 12px;
+  max-width: 900px;
+}
+
+/* input area always visible at the bottom */
+.chat-input-container {
+  position: sticky; /* keeps it visible while scrolling the messages */
+  bottom: 0;
+  background: transparent;
+  padding-top: 8px;
+}
+
+.chat-input-form { 
+  display: flex; 
+  gap: 10px; 
+}
+
+.chat-input {
+  flex: 1;
+  min-height: 42px;           /* avoid zero-height textareas */
+  resize: none;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid rgba(255,255,255,0.08);
+}
+
+.send-button { width: 44px; }
+
+/* typing indicator */
+.typing-indicator { display: flex; gap: 6px; padding: 8px 0; }
+.typing-indicator span {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: #a9acb1; animation: bubble 1.2s infinite ease-in-out;
+}
+.typing-indicator span:nth-child(2){ animation-delay: .15s }
+.typing-indicator span:nth-child(3){ animation-delay: .30s }
+@keyframes bubble { 0%,80%,100%{transform:scale(0)} 40%{transform:scale(1)} }

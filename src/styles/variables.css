@@ -1,28 +1,32 @@
 :root {
-    --primary-color: #2c3e50;
-    --secondary-color: #3498db;
-    --accent-color: #e74c3c;
-    --success-color: #27ae60;
-    --warning-color: #f39c12;
-    --background-color: #f8f9fa;
-    --surface-color: #ffffff;
-    --text-primary: #2c3e50;
-    --text-secondary: #7f8c8d;
-    --border-color: #ecf0f1;
-    --shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    --shadow-hover: 0 4px 8px rgba(0, 0, 0, 0.15);
+  /* Core brand */
+  --primary-color: #1b2559;        /* deep indigo */
+  --secondary-color: #15a3a3;      /* teal accents */
+  --accent-color: #ffb020;         /* amber highlight */
 
-    /* GitLab-style colors */
-    --gitlab-red: #d73a49;
-    --gitlab-green: #28a745;
-    --gitlab-blue: #0366d6;
-    --gitlab-orange: #f6a434;
-    --gitlab-purple: #6f42c1;
-    --gitlab-gray: #6a737d;
-    --gitlab-light-gray: #f6f8fa;
-    --gitlab-border: #e1e4e8;
-    --gitlab-diff-added: #e6ffed;
-    --gitlab-diff-removed: #ffeef0;
-    --gitlab-diff-added-border: #a3e4a3;
-    --gitlab-diff-removed-border: #f5c6cb;
+  /* Surfaces */
+  --background-color: #0b1220;     /* app background */
+  --surface-color: #121a2a;        /* cards & panes */
+  --surface-elevated: #17233a;     /* hovered/active card */
+
+  /* Text */
+  --text-primary: #f3f6ff;         /* high-contrast */
+  --text-secondary: #a7b3d0;
+  --muted: #7a86a5;
+
+  /* State */
+  --success-color: #22c55e;
+  --warning-color: #eab308;
+  --danger-color: #ef4444;
+
+  /* Borders & shadows */
+  --border-color: #1f2a44;
+  --shadow: 0 1px 2px rgba(0,0,0,.35);
+  --shadow-hover: 0 6px 20px rgba(0,0,0,.35);
+
+  /* Diff tokens (if you still use them elsewhere) */
+  --gitlab-diff-added: #08351d;
+  --gitlab-diff-removed: #3a0d11;
+  --gitlab-diff-added-border: #1c6b3b;
+  --gitlab-diff-removed-border: #7a1f2a;
 }

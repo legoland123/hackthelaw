@@ -1,211 +1,116 @@
-import React, { useState, useEffect } from 'react'
+import React, { useEffect, useState } from "react";
+import ReactDOM from "react-dom";
 
-const CreateProjectModal = ({ isOpen, onClose, onCreateProject }) => {
-    const [formData, setFormData] = useState({
-        name: '',
-        description: '',
-        category: 'contract'
-    })
-    const [errors, setErrors] = useState({})
-    const [isSubmitting, setIsSubmitting] = useState(false)
+export default function CreateProjectModal({ isOpen, onClose, onCreateProject }) {
+  const [name, setName] = useState("");
+  const [description, setDescription] = useState("");
+  const [status, setStatus] = useState("active");
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState("");
 
-    useEffect(() => {
-        if (isOpen) {
-            // Reset form when modal opens
-            setFormData({
-                name: '',
-                description: '',
-                category: 'contract'
-            })
-            setErrors({})
-            setIsSubmitting(false)
-        }
-    }, [isOpen])
+  // Lock scroll when open
+  useEffect(() => {
+    if (!isOpen) return;
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => { document.body.style.overflow = prev; };
+  }, [isOpen]);
 
-    const validateForm = () => {
-        const newErrors = {}
+  // Close on ESC
+  useEffect(() => {
+    if (!isOpen) return;
+    const onKey = (e) => e.key === "Escape" && onClose?.();
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [isOpen, onClose]);
 
-        if (!formData.name.trim()) {
-            newErrors.name = 'Project name is required'
-        } else if (formData.name.trim().length < 3) {
-            newErrors.name = 'Project name must be at least 3 characters'
-        } else if (formData.name.trim().length > 100) {
-            newErrors.name = 'Project name must be less than 100 characters'
-        }
+  const reset = () => {
+    setName(""); setDescription(""); setStatus("active");
+    setSubmitting(false); setError("");
+  };
 
-        if (formData.description.trim().length > 500) {
-            newErrors.description = 'Description must be less than 500 characters'
-        }
-
-        setErrors(newErrors)
-        return Object.keys(newErrors).length === 0
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!name.trim()) {
+      setError("Please enter a project name.");
+      return;
     }
-
-    const handleInputChange = (e) => {
-        const { name, value } = e.target
-        setFormData(prev => ({
-            ...prev,
-            [name]: value
-        }))
-
-        // Clear error when user starts typing
-        if (errors[name]) {
-            setErrors(prev => ({
-                ...prev,
-                [name]: ''
-            }))
-        }
+    setSubmitting(true);
+    setError("");
+    try {
+      const payload = {
+        name: name.trim(),
+        description: description.trim(),
+        status,
+        createdAt: new Date().toISOString(),
+        lastUpdated: new Date().toISOString(),
+        documentIds: [],
+        conflicts: [],
+      };
+      await onCreateProject?.(payload);
+      reset();
+    } catch (err) {
+      setError(err?.message || "Failed to create project.");
+    } finally {
+      setSubmitting(false);
     }
+  };
 
-    const handleSubmit = async (e) => {
-        e.preventDefault()
+  if (!isOpen) return null;
 
-        if (!validateForm()) {
-            return
-        }
-
-        setIsSubmitting(true)
-
-        try {
-            const projectData = {
-                name: formData.name.trim(),
-                description: formData.description.trim() || 'Please provide a description for this project.',
-                category: formData.category,
-                status: 'New'
-            }
-
-            await onCreateProject(projectData)
-            onClose()
-        } catch (error) {
-            console.error('Failed to create project:', error)
-            setErrors({ submit: 'Failed to create project. Please try again.' })
-        } finally {
-            setIsSubmitting(false)
-        }
-    }
-
-    const handleKeyDown = (e) => {
-        if (e.key === 'Escape') {
-            onClose()
-        }
-    }
-
-    if (!isOpen) return null
-
-    return (
-        <div className="modal-overlay" onClick={onClose}>
-            <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-                <div className="modal-header">
-                    <h2>Create New Project</h2>
-                    <button
-                        className="modal-close"
-                        onClick={onClose}
-                        aria-label="Close modal"
-                    >
-                        ×
-                    </button>
-                </div>
-
-                <form onSubmit={handleSubmit} className="modal-form">
-                    <div className="form-group">
-                        <label htmlFor="project-name" className="form-label">
-                            Project Name *
-                        </label>
-                        <input
-                            id="project-name"
-                            type="text"
-                            name="name"
-                            value={formData.name}
-                            onChange={handleInputChange}
-                            onKeyDown={handleKeyDown}
-                            className={`form-input ${errors.name ? 'form-input-error' : ''}`}
-                            placeholder="Enter project name..."
-                            autoFocus
-                            disabled={isSubmitting}
-                        />
-                        {errors.name && (
-                            <div className="form-error">{errors.name}</div>
-                        )}
-                    </div>
-
-                    <div className="form-group">
-                        <label htmlFor="project-description" className="form-label">
-                            Description
-                        </label>
-                        <textarea
-                            id="project-description"
-                            name="description"
-                            value={formData.description}
-                            onChange={handleInputChange}
-                            onKeyDown={handleKeyDown}
-                            className={`form-textarea ${errors.description ? 'form-input-error' : ''}`}
-                            placeholder="Describe the purpose and scope of this project..."
-                            rows="3"
-                            disabled={isSubmitting}
-                        />
-                        {errors.description && (
-                            <div className="form-error">{errors.description}</div>
-                        )}
-                        <div className="form-help">
-                            {formData.description.length}/500 characters
-                        </div>
-                    </div>
-
-                    <div className="form-group">
-                        <label htmlFor="project-category" className="form-label">
-                            Category
-                        </label>
-                        <select
-                            id="project-category"
-                            name="category"
-                            value={formData.category}
-                            onChange={handleInputChange}
-                            className="form-select"
-                            disabled={isSubmitting}
-                        >
-                            <option value="contract">Contract</option>
-                            <option value="agreement">Agreement</option>
-                            <option value="policy">Policy</option>
-                            <option value="terms">Terms & Conditions</option>
-                            <option value="legal">Legal Document</option>
-                            <option value="other">Other</option>
-                        </select>
-                    </div>
-
-                    {errors.submit && (
-                        <div className="form-error form-error-global">
-                            {errors.submit}
-                        </div>
-                    )}
-
-                    <div className="modal-actions">
-                        <button
-                            type="button"
-                            className="btn btn-secondary"
-                            onClick={onClose}
-                            disabled={isSubmitting}
-                        >
-                            Cancel
-                        </button>
-                        <button
-                            type="submit"
-                            className="btn btn-primary"
-                            disabled={isSubmitting || !formData.name.trim()}
-                        >
-                            {isSubmitting ? (
-                                <>
-                                    <span className="spinner-small"></span>
-                                    Creating...
-                                </>
-                            ) : (
-                                'Create Project'
-                            )}
-                        </button>
-                    </div>
-                </form>
-            </div>
+  const modalContent = (
+    <div className="modal-backdrop" onClick={onClose}>
+      <div className="modal" role="dialog" aria-modal="true" onClick={(e) => e.stopPropagation()}>
+        <div className="modal-header">
+          <h3 className="modal-title">Create New Project</h3>
+          <button className="modal-close" onClick={onClose} aria-label="Close">×</button>
         </div>
-    )
-}
 
-export default CreateProjectModal 
+        <form className="modal-body" onSubmit={handleSubmit}>
+          <div className="field">
+            <label htmlFor="proj-name">Project name</label>
+            <input
+              id="proj-name"
+              type="text"
+              placeholder="e.g., PDPA Data Leak Investigation"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              autoFocus
+            />
+          </div>
+
+          <div className="field">
+            <label htmlFor="proj-desc">Description</label>
+            <textarea
+              id="proj-desc"
+              placeholder="What is this project about?"
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+            />
+          </div>
+
+          <div className="field">
+            <label htmlFor="proj-status">Status</label>
+            <select id="proj-status" value={status} onChange={(e) => setStatus(e.target.value)}>
+              <option value="active">Active</option>
+              <option value="on-hold">On hold</option>
+              <option value="completed">Completed</option>
+            </select>
+          </div>
+
+          {error && <div style={{ color: "#fca5a5", fontSize: ".95rem" }}>{error}</div>}
+
+          <div className="modal-footer">
+            <button type="button" className="btn btn-outline" onClick={onClose}>Cancel</button>
+            <button type="submit" className="btn btn-primary" disabled={submitting}>
+              {submitting ? "Creating…" : "Create Project"}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+
+  // Render above everything to avoid z-index/layout issues
+  return ReactDOM.createPortal(modalContent, document.body);
+}
