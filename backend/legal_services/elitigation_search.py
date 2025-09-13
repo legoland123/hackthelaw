@@ -231,13 +231,8 @@ def search_and_scrape_elitigation_cases(request: ELitigationEnhancedRequest) -> 
         )
         
         # Use the existing search function to get initial results
-        if True: # hackathon override
-            # sleep awhile and log
-            logger.info("⏳ Simulating initial search delay...")
-            asyncio.sleep(1)  # Simulate delay
-            initial_results = json.load(open("legal_services/elitigation_initial_results.json"))
-        else:
-            initial_results = search_elitigation_cases(basic_request)
+        
+        initial_results = search_elitigation_cases(basic_request)
 
         if initial_results.get('status') != 'success' or not initial_results.get('cases'):
             return initial_results

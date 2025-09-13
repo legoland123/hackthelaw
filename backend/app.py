@@ -672,10 +672,8 @@ async def _handle_legal_query(llm_processor: LLMProcessor, request: ChatRequest)
             max_statutes=5  # Limit for chat context
         )
         
-        if True: # hackathon override
-            statute_search_results = json.load(open("legal_services/statute_search_result.json"))
-        else:
-            statute_search_results = await find_relevant_statutes(statute_request)
+    
+        statute_search_results = await find_relevant_statutes(statute_request)
         
         # If statutes were found, search for amendments
         if (statute_search_results and 
@@ -693,13 +691,8 @@ async def _handle_legal_query(llm_processor: LLMProcessor, request: ChatRequest)
                     max_results_per_statute=3  # Limit for chat context
                 )
                 
-                if True: # hackathon override
-                    # sleep awhile and log
-                    logger.info("⏳ Simulating amendment search delay...")
-                    await asyncio.sleep(2)  # Simulate delay
-                    amendment_search_results = json.load(open("legal_services/amendment_sample.json"))
-                else:
-                    amendment_search_results = await search_amendment(amendment_request)
+                
+                amendment_search_results = await search_amendment(amendment_request)
             
             # Perform eLitigation search for testing (not included in conversation)
             if (statute_search_results and 
@@ -720,13 +713,8 @@ async def _handle_legal_query(llm_processor: LLMProcessor, request: ChatRequest)
                             user_id=request.user_id
                         )
                         
-                        if True: # hackathon override
-                            # sleep awhile and log
-                            logger.info("⏳ Simulating eLitigation search delay...")
-                            await asyncio.sleep(2)  # Simulate delay
-                            elitigation_results = json.load(open("legal_services/elitigation_scraped.json"))
-                        else:
-                            elitigation_results = search_and_scrape_elitigation_cases(elitigation_request)
+                    
+                        elitigation_results = search_and_scrape_elitigation_cases(elitigation_request)
                         logger.info(f"📋 Enhanced eLitigation search completed: {elitigation_results.get('total_found', 0)} cases found")
                         
                         # Log results for testing
