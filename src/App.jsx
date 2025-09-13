@@ -148,9 +148,6 @@ function App() {
       ) : (
         <>
           <Routes>
-            <Route path="/login" element={<LoginPage onLogin={handleLogin} />} />
-            <Route path="/signup" element={<SignupPage onLogin={handleLogin} />} />
-
             <Route
               path="/"
               element={
@@ -163,29 +160,49 @@ function App() {
               }
             />
 
+            {/* Auth routes */}
+            <Route path="/login" element={<LoginPage onLogin={handleLogin} />} />
+            <Route path="/signup" element={<SignupPage onSignup={handleLogin} />} />
+
             {/* Global (non-project) chat */}
             <Route path="/ai-chat" element={<AIChat />} />
 
             {/* Optional global (non-project) statute finder */}
             <Route path="/statutes" element={<StatuteFinder />} />
 
-            {/* Project hub + project-scoped aliases (chat, statutes) */}
+            {/* Project hub (main project view) */}
             <Route
               path="/project/:projectId"
               element={
-                <RequireAuth>
-                  <ProjectView
-                    projects={projects}
-                    onUpdateProject={handleUpdateProject}
-                  />
-                </RequireAuth>
+                <ProjectView
+                  projects={projects}
+                  onUpdateProject={handleUpdateProject}
+                />
               }
             />
-            <Route path="/ai-chat" element={
-              <RequireAuth>
-                <AIChat />
-              </RequireAuth>
-            } />
+
+            {/* Project-scoped chat */}
+            <Route
+              path="/project/:projectId/chat"
+              element={
+                <ProjectView
+                  projects={projects}
+                  onUpdateProject={handleUpdateProject}
+                />
+              }
+            />
+
+            {/* Project-scoped statutes */}
+            <Route
+              path="/project/:projectId/statutes"
+              element={
+                <ProjectView
+                  projects={projects}
+                  onUpdateProject={handleUpdateProject}
+                />
+              }
+            />
+
             <Route path="/404" element={<NotFound />} />
             <Route path="*" element={<Navigate to="/404" replace />} />
           </Routes>
