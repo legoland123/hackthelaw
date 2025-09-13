@@ -1,0 +1,138 @@
+/* src/styles/auth.css  — small, component-scoped styles */
+
+.auth-wrapper {
+  display: flex;
+  justify-content: center;
+  padding: 48px 16px;
+}
+
+.auth-card {
+  width: 100%;
+  max-width: 760px;
+  border-radius: 16px;
+  padding: 28px;
+  box-shadow: 0 18px 60px rgba(0,0,0,.25);
+}
+
+.auth-title {
+  margin: 0 0 8px;
+  font-size: 1.5rem;
+  line-height: 1.2;
+}
+
+.auth-subtitle {
+  margin: 0 0 20px;
+  opacity: .8;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr auto;
+  gap: 12px;
+  align-items: end;
+}
+
+@media (max-width: 720px) {
+  .form-grid { grid-template-columns: 1fr; }
+}
+
+.field {
+  display: grid;
+  gap: 6px;
+}
+
+.field > span {
+  font-size: .9rem;
+  opacity: .85;
+}
+
+.field input {
+  height: 44px;
+  padding: 0 12px;
+  border-radius: 10px;
+  border: 1px solid rgba(255,255,255,0.1);
+  background: rgba(255,255,255,0.04);
+  color: inherit;
+}
+
+.actions {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.btn-lg { height: 44px; padding: 0 18px; }
+
+.auth-footer {
+  margin-top: 16px;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  opacity: .9;
+}
+
+.auth-error {
+  margin-top: 14px;
+  color: var(--danger, #ff6b6b);
+}
+
+/* OTP step */
+.otp-form {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 12px;
+  align-items: center;
+}
+
+.otp-input {
+  letter-spacing: .35em;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+  font-size: 1.1rem;
+  height: 44px;
+  border-radius: 10px;
+  border: 1px solid rgba(255,255,255,0.1);
+  background: rgba(255,255,255,0.04);
+  padding: 0 12px;
+}
+
+/* QR confirmation */
+.qr-row {
+  display: grid;
+  grid-template-columns: 180px 1fr;
+  gap: 16px;
+  align-items: start;
+}
+
+@media (max-width: 720px) {
+  .qr-row { grid-template-columns: 1fr; }
+}
+
+.qr {
+  width: 180px;
+  height: 180px;
+  border-radius: 12px;
+  background: rgba(255,255,255,0.04);
+  object-fit: contain;
+}
+
+.qr.skeleton {
+  animation: pulse 1.6s infinite;
+}
+
+.qr-form {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 12px;
+  align-items: end;
+}
+
+.demo-secret {
+  margin-top: 10px;
+  opacity: .65;
+  font-size: .85rem;
+}
+
+@keyframes pulse {
+  0% { opacity: .5; } 50% { opacity: .25; } 100% { opacity: .5; }
+}

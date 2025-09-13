@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { authenticator } from 'otplib'
 import qrcode from 'qrcode'
+import '../styles/auth.css'
 
 import { Buffer } from 'buffer'
 if (typeof window !== 'undefined' && !window.Buffer) window.Buffer = Buffer
