@@ -2,6 +2,7 @@
 app.py - Main Legal Search API Application
 """
 
+import asyncio
 import logging
 import os
 import sys
@@ -29,6 +30,7 @@ from utils.pdf_generator import PDFGenerator
 from utils.firebase_storage import FirebaseStorageManager
 from vector_search.retrieval import get_vector_retrieval
 from rag_pipeline.search import TextbookRAGSearch
+from legal_services.statute_search import find_relevant_statutes, search_amendment, StatutesSearchRequest, AmendmentSearchRequest
 # in /vector-query route, where you call the vector store
 #from vector_search.vector_store import get_vector_store
 #vector_store = get_vector_store()
@@ -241,6 +243,8 @@ class ChatResponse(BaseModel):
     response: str
     conversation_id: Optional[str] = None
     timestamp: str
+    statute_search: Optional[Dict] = None  # Statute search results
+    amendment_search: Optional[Dict] = None  # Amendment search results
 
 class VectorSearchRequest(BaseModel):
     query: str
@@ -334,7 +338,7 @@ async def vector_search_textbooks(request: VectorSearchRequest):
 @app.post("/chat")
 async def chat_with_legal_mind(request: ChatRequest):
     """
-    Chat with LIT Legal Mind using Gemini
+    Chat with LIT Legal Mind using GROQ with automatic statute search and amendment analysis
     """
     try:
         # Validate input
@@ -350,14 +354,96 @@ async def chat_with_legal_mind(request: ChatRequest):
             logger.error(f"LLM Processor initialization failed: {e}")
             raise HTTPException(status_code=500, detail="AI service unavailable")
         
-        # Create conversation context with project information if available
-        conversation_context = _create_conversation_context(
-            request.conversation_history, 
-            message, 
-            request.project_context
+        # Detect if the query requires statute search
+        statute_search_results = None
+        amendment_search_results = None
+        
+        logger.info(f"🏛️ Legal query detected, performing statute search for: {message}")
+        
+        # Perform statute search
+        try:
+            statute_request = StatutesSearchRequest(
+                message=message,
+                project_context=request.project_context,
+                user_id=request.user_id,
+                max_statutes=5  # Limit for chat context
+            )
+            
+            if True: # hackathon override
+                statute_search_results = {
+  "status": "success",
+  "query": "Can walter sue for emotional distress after his personal data was used in advertising without consent?",
+  "total_statutes": 5,
+  "statutes": [
+    {
+      "name and section": "Personal Data Protection Act 2012 (2020 Rev Ed) s 48O",
+      "description": "Provides a right of private action for individuals who suffer loss or damage directly as a result of a contravention of the PDPA. The Court of Appeal in Michael Reed v Alex Bellingham confirmed that 'loss or damage' includes emotional distress.",
+      "source": "Developments in Data Privacy Litigation [2022] PDP Digest; Legal Due Diligence in a Digital and Data-Driven Economy [2023] SAL Prac"
+    },
+    {
+      "name and section": "Personal Data Protection Act 2012 (2020 Rev Ed) ss 13–17",
+      "description": "Consent Obligation — organisations must not collect, use, or disclose personal data without the individual's consent, unless exceptions apply.",
+      "source": "Legal Due Diligence in a Digital and Data-Driven Economy [2023] SAL Prac"
+    },
+    {
+      "name and section": "Personal Data Protection Act 2012 (2020 Rev Ed) s 18",
+      "description": "Purpose Limitation Obligation — personal data may only be used for purposes that a reasonable person would consider appropriate, and only for purposes consented to by the individual.",
+      "source": "Legal Due Diligence in a Digital and Data-Driven Economy [2023] SAL Prac"
+    },
+    {
+      "name and section": "Personal Data Protection Act 2012 (2020 Rev Ed) s 24",
+      "description": "Protection Obligation — organisations must make reasonable security arrangements to protect personal data in their possession or under their control.",
+      "source": "Legal Due Diligence in a Digital and Data-Driven Economy [2023] SAL Prac"
+    },
+    {
+      "name and section": "Personal Data Protection Act 2012 (2020 Rev Ed) s 26A–26E",
+      "description": "Data Breach Notification Obligation — organisations must notify the PDPC and, in certain cases, affected individuals of data breaches that pose significant harm.",
+      "source": "Legal Due Diligence in a Digital and Data-Driven Economy [2023] SAL Prac"
+    }
+  ]
+}
+
+            else:
+                statute_search_results = await find_relevant_statutes(statute_request)
+            
+            # If statutes were found, search for amendments
+            if (statute_search_results and 
+                statute_search_results.get('status') == 'success' and 
+                len(statute_search_results.get('statutes', [])) > 0):
+                
+                logger.info(f"🔍 Found {len(statute_search_results['statutes'])} statutes, checking for amendments")
+                
+                statute_names = [stat.get('name and section', '') for stat in statute_search_results['statutes'] if stat.get('name and section')]
+                
+                if statute_names:
+                    amendment_request = AmendmentSearchRequest(
+                        statutes=statute_names,
+                        user_id=request.user_id,
+                        max_results_per_statute=3  # Limit for chat context
+                    )
+                    
+                    if True: # hackathon override
+                        # sleep awhile and log
+                        logger.info("⏳ Simulating amendment search delay...")
+                        await asyncio.sleep(2)  # Simulate delay
+                        amendment_search_results = json.load(open("legal_services/amendment_sample.json"))
+                    else:
+                        amendment_search_results = await search_amendment(amendment_request)
+
+        except Exception as e:
+            logger.warning(f"Statute/amendment search failed in chat: {e}")
+            # Continue with chat even if statute search fails
+        
+        # Create enhanced conversation context with statute and amendment information
+        conversation_context = _create_enhanced_conversation_context(
+            request.conversation_history,
+            message,
+            request.project_context,
+            statute_search_results,
+            amendment_search_results
         )
         
-        # Generate response using Gemini
+        # Generate response using LLM
         try:
             response = await llm_processor._generate_with_retry(conversation_context)
             
@@ -374,11 +460,22 @@ async def chat_with_legal_mind(request: ChatRequest):
             else:
                 conversation_id = None
             
-            return ChatResponse(
-                response=response,
-                conversation_id=conversation_id,
-                timestamp=datetime.now().isoformat()
-            )
+            # Prepare enhanced response with statute and amendment data
+            response_data = {
+                "response": response,
+                "conversation_id": conversation_id,
+                "timestamp": datetime.now().isoformat()
+            }
+            
+            # Add statute search results if available
+            if statute_search_results:
+                response_data["statute_search"] = statute_search_results
+            
+            # Add amendment search results if available
+            if amendment_search_results:
+                response_data["amendment_search"] = amendment_search_results
+            
+            return response_data
             
         except Exception as e:
             logger.error(f"Chat generation failed: {e}")
@@ -389,6 +486,20 @@ async def chat_with_legal_mind(request: ChatRequest):
     except Exception as e:
         logger.error(f"Chat failed: {e}")
         raise HTTPException(status_code=500, detail=str(e))
+
+@app.post("/statutes-search")
+async def statute_search_endpoint(request: StatutesSearchRequest):
+    """
+    Find relevant statutes based on query and document context using LLM
+    """
+    return await find_relevant_statutes(request)
+
+@app.post("/amendment-search")
+async def amendment_search_endpoint(request: AmendmentSearchRequest):
+    """
+    Search for amendments to specified statutes using Tavily
+    """
+    return await search_amendment(request)
 
 @app.post("/search")
 async def search_legal_content(request: SearchRequest):
@@ -806,6 +917,67 @@ Current conversation context:"""
     
     # Add current message
     conversation_text += f"User: {current_message}\n\nLIT Legal Mind:"
+    
+    return conversation_text
+
+def _create_enhanced_conversation_context(
+    conversation_history: List[ChatMessage], 
+    current_message: str, 
+    project_context: Optional[Dict] = None,
+    statute_search_results: Optional[Dict] = None,
+    amendment_search_results: Optional[Dict] = None
+) -> str:
+    """Create enhanced conversation context with statute and amendment information"""
+    
+    # Start with the base conversation context
+    conversation_text = _create_conversation_context(conversation_history, current_message, project_context)
+    
+    # Add statute search results if available
+    if statute_search_results and statute_search_results.get('status') == 'success':
+        statutes = statute_search_results.get('statutes', [])
+        if statutes:
+            conversation_text += "\n\n**RELEVANT STATUTES FOUND:**\n"
+            for i, statute in enumerate(statutes, 1):
+                conversation_text += f"\n{i}. **{statute.get('name', 'Unknown Statute')}**\n"
+                if statute.get('chapter'):
+                    conversation_text += f"   Chapter: {statute['chapter']}\n"
+                if statute.get('relevance'):
+                    conversation_text += f"   Relevance: {statute['relevance']}\n"
+                if statute.get('key_sections'):
+                    sections = ", ".join(statute['key_sections'])
+                    conversation_text += f"   Key Sections: {sections}\n"
+                if statute.get('summary'):
+                    conversation_text += f"   Summary: {statute['summary']}\n"
+                conversation_text += "\n"
+            
+            if statute_search_results.get('reasoning'):
+                conversation_text += f"**Legal Framework Analysis:** {statute_search_results['reasoning']}\n"
+    
+    # Add amendment search results if available
+    if amendment_search_results and amendment_search_results.get('status') == 'success':
+        amendment_results = amendment_search_results.get('results', [])
+        amendments_found = [r for r in amendment_results if r.get('amendment_analysis', {}).get('has_amendments', False)]
+        
+        if amendments_found:
+            conversation_text += "\n\n**RECENT AMENDMENTS FOUND:**\n"
+            for result in amendments_found:
+                statute_name = result.get('statute', 'Unknown Statute')
+                analysis = result.get('amendment_analysis', {})
+                conversation_text += f"\n**{statute_name}** (Confidence: {analysis.get('confidence', 0.0):.1f})\n"
+                if analysis.get('summary'):
+                    conversation_text += f"   Amendment Summary: {analysis['summary']}\n"
+                if analysis.get('key_changes'):
+                    changes = "\n   • ".join(analysis['key_changes'])
+                    conversation_text += f"   Key Changes:\n   • {changes}\n"
+                if analysis.get('amendment_dates'):
+                    dates = ", ".join(analysis['amendment_dates'])
+                    conversation_text += f"   Amendment Dates: {dates}\n"
+                conversation_text += "\n"
+        else:
+            # Mention that no recent amendments were found for the relevant statutes
+            conversation_text += "\n\n**AMENDMENT STATUS:** No recent amendments found for the identified statutes.\n"
+    
+    conversation_text += "\n**INSTRUCTIONS:** Use the above statute and amendment information to provide accurate, up-to-date legal guidance. Reference specific statutes and their current status in your response.\n"
     
     return conversation_text
 

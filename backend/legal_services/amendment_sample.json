@@ -1,0 +1,245 @@
+{
+  "status": "success",
+  "total_statutes_searched": 5,
+  "statutes_with_amendments": 4,
+  "results": [
+    {
+      "statute": "Personal Data Protection Act 2012 (2020 Rev Ed) s 48O",
+      "search_query": "Singapore Personal Data Protection Act 2012 (2020 Rev Ed) s 48O amendment changed updated recent",
+      "total_results": 3,
+      "search_results": [
+        {
+          "title": "Personal Data Protection Act 2012 - Singapore Statutes Online",
+          "url": "https://sso.agc.gov.sg/Act/PDPA2012",
+          "content": "|  |  |  |  |\n ---  --- |\n|  | 2 | Jan | 2013 |\n|  | 2 | Dec | 2013 |\n|  | 2 | Jan | 2014 |\n|  | 2 | Jul | 2014 |\n|  | 23 | Jan | 2015 |\n|  | 3 | Jan | 2016 |\n|  | 1 | Oct | 2016 |\n|  | 2 | Oct | 2016 |\n|  | 2 | Jan | 2021 |\n|  | 1 | Feb | 2021 |\n|  | 31 | Dec | 2021 |\n|  | 1 | Apr | 2022 |\n|  | 1 | Oct | 2022 |\n\n# Search within Legislation\n\n|  |\n\n| Personal Data Protection  Act 2012 |\n\n|  |\n\n| 2020 REVISED EDITION |\n\n|  | [...] | This revised edition incorporates all amendments up to and including 1 December 2021 and comes into operation on 31 December 2021 |\n\n|  |\n\n| An Act to govern the collection, use and disclosure of personal data by organisations, and to establish the Do Not Call Register and to provide for its administration, and for matters connected therewith. [22/2016] |\n\n|  | [...] | (2)  Parts 3, 4, 5, 6 (except sections 24 and 25), 6A (except sections 26C(3)(a) and 26E) and 6B do not impose any obligation on a data intermediary in respect of its processing of personal data on behalf of and for the purposes of another organisation pursuant to a contract which is evidenced or made in writing. [40/2020] |\n\n|  |",
+          "score": 0.7797419,
+          "published_date": ""
+        },
+        {
+          "title": "Personal Data Protection Act 2012 - Singapore Statutes Online",
+          "url": "https://sso.agc.gov.sg/Act/PDPA2012?ProvIds=P19C-",
+          "content": "| 48O.\u2014(1)  A person who suffers loss or damage directly as a result of a contravention \u2014  |  |  |  --- | | (a) | by an organisation of any provision of Part 4, 5, 6, 6A or 6B; or | | (b) | by a person of any provision of Division 3 of Part 9 or section 48B(1), |  |  |  | has a right of action for relief in civil proceedings in a court. |   [40/2020]   |  |  | (2)  If the Commission has made a decision under this Act in respect of a contravention specified in subsection (1), an action accruing [...] reconsideration. [40/2020] | |  |  |  | (7)  There is to be no application for reconsideration of a decision made under subsection (6)(b). [40/2020] | |  |  |  | Right of private action |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  ---  ---  ---  ---  ---  ---  --- | | 48O.\u2014(1)  A person who suffers loss or damage directly as a result of a contravention \u2014  |  |  |  --- | | (a) | by an organisation of any provision of Part 4, 5, 6, 6A or 6B; or | | (b) | by a person of any provision of [...] | 48M.\u2014(1)  For the purposes of enforcing a direction or written notice mentioned in subsection (2) \u2014  |  |  |  --- | | (a) | the Commission may apply for the direction or written notice (as the case may be) to be registered in a District Court in accordance with the Rules of Court; and | | (b) | the District Court is to register the direction or written notice in accordance with the Rules of Court. [40/2020] |  |  |  |  |  |  |  |  |  |  |  ---  ---  ---  ---  | (2)  Subsection (1) applies to",
+          "score": 0.68420124,
+          "published_date": ""
+        },
+        {
+          "title": "Personal Data Protection Act 2012 - Singapore Statutes Online",
+          "url": "https://sso.agc.gov.sg/Act/PDPA2012?ProvIds=P16-",
+          "content": "|  |  |  |  |  |\n ---  --- \n| 24.  An organisation must protect personal data in its possession or under its control by making reasonable security arrangements to prevent \u2014  |  |  |  --- | | (a) | unauthorised access, collection, use, disclosure, copying, modification or disposal, or similar risks; and | | (b) | the loss of any storage medium or device on which personal data is stored. [40/2020] | | [...] |  |  |\n --- |\n| (a) | unauthorised access, collection, use, disclosure, copying, modification or disposal, or similar risks; and |\n| (b) | the loss of any storage medium or device on which personal data is stored. [40/2020] |\n\n|  |\n\n| Retention of personal data | [...] another organisation. | |  |  |  | Protection of personal data |  |  |  |  |  |  |  ---  ---  | 24.  An organisation must protect personal data in its possession or under its control by making reasonable security arrangements to prevent \u2014  |  |  |  --- | | (a) | unauthorised access, collection, use, disclosure, copying, modification or disposal, or similar risks; and | | (b) | the loss of any storage medium or device on which personal data is stored. [40/2020] | |  |  |  | Retention of personal",
+          "score": 0.64773196,
+          "published_date": ""
+        }
+      ],
+      "amendment_analysis": {
+        "has_amendments": true,
+        "confidence": 0.78,
+        "summary": "Section 48O of the Personal Data Protection Act 2012 was amended by Act 40 of 2020, introducing a private right of action and related procedural provisions. The 2020 revised edition of the Act, which incorporates all amendments up to 1\u202fDecember\u202f2021, became effective on 31\u202fDecember\u202f2021. No amendments after 2021 were found in the provided sources.",
+        "key_changes": [
+          "Introduction of a private right of action for persons suffering loss or damage due to a contravention (s48O(1)).",
+          "Provision allowing civil proceedings in court for such loss or damage (s48O(1)).",
+          "Clarification that actions may proceed even if the PDPC has made a decision on the contravention (s48O(2)).",
+          "Restriction that no application for reconsideration can be made against a decision under subsection (6)(b) (s48O(7))."
+        ],
+        "amendment_dates": [
+          "2020 (Act 40 of 2020)",
+          "31 December 2021 (effective date of the 2020 revised edition incorporating the amendment)"
+        ],
+        "sources": [
+          "https://sso.agc.gov.sg/Act/PDPA2012 (Result 1 \u2013 notes that the 2020 revised edition incorporates amendments up to 1\u202fDecember\u202f2021)",
+          "https://sso.agc.gov.sg/Act/PDPA2012?ProvIds=P19C- (Result 2 \u2013 shows the text of s48O with citation [40/2020])"
+        ]
+      },
+      "search_timestamp": "2025-09-13T17:04:49.898133"
+    },
+    {
+      "statute": "Personal Data Protection Act 2012 (2020 Rev Ed) ss 13\u201317",
+      "search_query": "Singapore Personal Data Protection Act 2012 (2020 Rev Ed) ss 13\u201317 amendment changed updated recent",
+      "total_results": 3,
+      "search_results": [
+        {
+          "title": "Personal Data Protection Act 2012 - Singapore Statutes Online",
+          "url": "https://sso.agc.gov.sg/Act/PDPA2012",
+          "content": "|  |  |  |  |\n ---  --- |\n|  | 2 | Jan | 2013 |\n|  | 2 | Dec | 2013 |\n|  | 2 | Jan | 2014 |\n|  | 2 | Jul | 2014 |\n|  | 23 | Jan | 2015 |\n|  | 3 | Jan | 2016 |\n|  | 1 | Oct | 2016 |\n|  | 2 | Oct | 2016 |\n|  | 2 | Jan | 2021 |\n|  | 1 | Feb | 2021 |\n|  | 31 | Dec | 2021 |\n|  | 1 | Apr | 2022 |\n|  | 1 | Oct | 2022 |\n\n# Search within Legislation\n\n|  |\n\n| Personal Data Protection  Act 2012 |\n\n|  |\n\n| 2020 REVISED EDITION |\n\n|  | [...] | This revised edition incorporates all amendments up to and including 1 December 2021 and comes into operation on 31 December 2021 |\n\n|  |\n\n| An Act to govern the collection, use and disclosure of personal data by organisations, and to establish the Do Not Call Register and to provide for its administration, and for matters connected therewith. [22/2016] |\n\n|  | [...] | (2)  Parts 3, 4, 5, 6 (except sections 24 and 25), 6A (except sections 26C(3)(a) and 26E) and 6B do not impose any obligation on a data intermediary in respect of its processing of personal data on behalf of and for the purposes of another organisation pursuant to a contract which is evidenced or made in writing. [40/2020] |\n\n|  |",
+          "score": 0.7434107,
+          "published_date": ""
+        },
+        {
+          "title": "Personal Data Protection Act 2012 - Singapore Statutes Online",
+          "url": "https://sso.agc.gov.sg/Act/PDPA2012?ProvIds=pr13-,pr14-,pr15-,pr16-,pr17-",
+          "content": "| (b) | use or disclose personal data about an individual that \u2014  |  |  |  --- | | (i) | is collected by the organisation on or after 1 February 2021 in accordance with subsection (1)(a); or | | (ii) | was collected by the organisation before 1 February 2021 in accordance with section 17(1) as in force before that date, |  |  |  | for purposes consistent with the purpose of that collection, or for any purpose permitted by subsection (1)(b) or (c), as the case may be. |   [40/2020] | [...] continued in force until 1 February 2021. [40/2020] | | [...] |  |  |\n --- |\n| (a) | on or after 1 February 2021; or |\n| (b) | which contract was entered into before 1 February 2021 and remains in force on that date, |\n\n|  |\n\n| as if subsections (3) and (4) \u2014 |\n\n|  |  |\n --- |\n| (c) | were in force when the personal data was so provided; and |\n| (d) | had continued in force until 1 February 2021. [40/2020] |",
+          "score": 0.5951402,
+          "published_date": ""
+        },
+        {
+          "title": "Personal Data Protection Act 2012 - Singapore Statutes Online",
+          "url": "https://sso.agc.gov.sg/Act/PDPA2012?ProvIds=pr26-",
+          "content": "SECOND SCHEDULE\nAdditional bases for collection, use and disclosure of personal data without consent\n\n  THIRD SCHEDULE\nRepealed\n\n  FOURTH SCHEDULE\nRepealed\n\n  FIFTH SCHEDULE\nExceptions from access requirement\n\n  SIXTH SCHEDULE\nExceptions from correction requirement\n\n  SEVENTH SCHEDULE\nConstitution and proceedings of Data Protection Appeal Panel and Data Protection Appeal Committees\n\n  EIGHTH SCHEDULE\nExclusion from meaning of \"specified message\" [...] |  |  |  |  |\n ---  --- |\n|  | 2 | Jan | 2013 |\n|  | 2 | Dec | 2013 |\n|  | 2 | Jan | 2014 |\n|  | 2 | Jul | 2014 |\n|  | 23 | Jan | 2015 |\n|  | 3 | Jan | 2016 |\n|  | 1 | Oct | 2016 |\n|  | 2 | Oct | 2016 |\n|  | 2 | Jan | 2021 |\n|  | 1 | Feb | 2021 |\n|  | 31 | Dec | 2021 |\n|  | 1 | Apr | 2022 |\n|  | 1 | Oct | 2022 |\n\n# Search within Legislation\n\n|  |\n\n| Transfer of personal data outside Singapore | [...] | 26.\u2014(1)  An organisation must not transfer any personal data to a country or territory outside Singapore except in accordance with requirements prescribed under this Act to ensure that organisations provide a standard of protection to personal data so transferred that is comparable to the protection under this Act.  |  |  | (2)  The Commission may, on the application of any organisation, by written notice exempt the organisation from any requirement prescribed pursuant to subsection (1) in",
+          "score": 0.53094244,
+          "published_date": ""
+        }
+      ],
+      "amendment_analysis": {
+        "has_amendments": true,
+        "confidence": 0.86,
+        "summary": "Official Singapore Statutes Online shows that the Personal Data Protection Act 2012 (2020 Revised Edition) \u2013 which already incorporated amendments up to 1\u202fDecember\u202f2021 \u2013 has further amendments affecting sections\u202f13\u201117. Notably, Amendment 40/2020 introduced new conditions for the use/disclosure of personal data collected on or after 1\u202fFebruary\u202f2021, with transitional provisions for data collected earlier. Subsequent amendment dates (1\u202fApril\u202f2022 and 1\u202fOctober\u202f2022) are listed in the amendment history, indicating continued updates after the 2020 revised edition.",
+        "key_changes": [
+          "Amendment 40/2020 (effective 1\u202fFeb\u202f2021): added new criteria for use/disclosure of personal data collected on or after that date, and transitional provisions for data collected before that date (affecting ss\u202f13\u201117).",
+          "Inclusion of transitional provisions ensuring that data collected before 1\u202fFeb\u202f2021 remains subject to the pre\u2011amendment rules (section\u202f13\u201117 references).",
+          "Later amendments recorded on 1\u202fApr\u202f2022 and 1\u202fOct\u202f2022 (details not fully shown in snippets) suggest further refinements to the same sections."
+        ],
+        "amendment_dates": [
+          "1 February 2021 (Amendment 40/2020)",
+          "31 December 2021 (2020 Revised Edition came into operation)",
+          "1 April 2022",
+          "1 October 2022"
+        ],
+        "sources": [
+          "https://sso.agc.gov.sg/Act/PDPA2012",
+          "https://sso.agc.gov.sg/Act/PDPA2012?ProvIds=pr13-,pr14-,pr15-,pr16-,pr17-",
+          "https://sso.agc.gov.sg/Act/PDPA2012?ProvIds=pr26-"
+        ]
+      },
+      "search_timestamp": "2025-09-13T17:04:56.278773"
+    },
+    {
+      "statute": "Personal Data Protection Act 2012 (2020 Rev Ed) s 18",
+      "search_query": "Singapore Personal Data Protection Act 2012 (2020 Rev Ed) s 18 amendment changed updated recent",
+      "total_results": 3,
+      "search_results": [
+        {
+          "title": "Personal Data Protection Act 2012 - Singapore Statutes Online",
+          "url": "https://sso.agc.gov.sg/Act/PDPA2012",
+          "content": "|  |  |  |  |\n ---  --- |\n|  | 2 | Jan | 2013 |\n|  | 2 | Dec | 2013 |\n|  | 2 | Jan | 2014 |\n|  | 2 | Jul | 2014 |\n|  | 23 | Jan | 2015 |\n|  | 3 | Jan | 2016 |\n|  | 1 | Oct | 2016 |\n|  | 2 | Oct | 2016 |\n|  | 2 | Jan | 2021 |\n|  | 1 | Feb | 2021 |\n|  | 31 | Dec | 2021 |\n|  | 1 | Apr | 2022 |\n|  | 1 | Oct | 2022 |\n\n# Search within Legislation\n\n|  |\n\n| Personal Data Protection  Act 2012 |\n\n|  |\n\n| 2020 REVISED EDITION |\n\n|  | [...] | This revised edition incorporates all amendments up to and including 1 December 2021 and comes into operation on 31 December 2021 |\n\n|  |\n\n| An Act to govern the collection, use and disclosure of personal data by organisations, and to establish the Do Not Call Register and to provide for its administration, and for matters connected therewith. [22/2016] |\n\n|  | [...] | (2)  Parts 3, 4, 5, 6 (except sections 24 and 25), 6A (except sections 26C(3)(a) and 26E) and 6B do not impose any obligation on a data intermediary in respect of its processing of personal data on behalf of and for the purposes of another organisation pursuant to a contract which is evidenced or made in writing. [40/2020] |\n\n|  |",
+          "score": 0.76596165,
+          "published_date": ""
+        },
+        {
+          "title": "Personal Data Protection Act 2012 - Singapore Statutes Online",
+          "url": "https://sso.agc.gov.sg/Act/PDPA2012?ProvIds=P16-",
+          "content": "|  |  |  |  |  |\n ---  --- \n| 24.  An organisation must protect personal data in its possession or under its control by making reasonable security arrangements to prevent \u2014  |  |  |  --- | | (a) | unauthorised access, collection, use, disclosure, copying, modification or disposal, or similar risks; and | | (b) | the loss of any storage medium or device on which personal data is stored. [40/2020] | | [...] another organisation. | |  |  |  | Protection of personal data |  |  |  |  |  |  |  ---  ---  | 24.  An organisation must protect personal data in its possession or under its control by making reasonable security arrangements to prevent \u2014  |  |  |  --- | | (a) | unauthorised access, collection, use, disclosure, copying, modification or disposal, or similar risks; and | | (b) | the loss of any storage medium or device on which personal data is stored. [40/2020] | |  |  |  | Retention of personal [...] |  |  |\n --- |\n| (a) | unauthorised access, collection, use, disclosure, copying, modification or disposal, or similar risks; and |\n| (b) | the loss of any storage medium or device on which personal data is stored. [40/2020] |\n\n|  |\n\n| Retention of personal data |",
+          "score": 0.6533265,
+          "published_date": ""
+        },
+        {
+          "title": "Personal Data Protection Act 2012 - Singapore Statutes Online",
+          "url": "https://sso.agc.gov.sg/Act/PDPA2012?ProvIds=pr18-",
+          "content": "|  |  |  |  |  |\n ---  --- \n| 18.  An organisation may collect, use or disclose personal data about an individual only for purposes \u2014  |  |  |  --- | | (a) | that a reasonable person would consider appropriate in the circumstances; and | | (b) | that the individual has been informed of under section 20, if applicable. | | [...] |  |  |  |  |\n ---  --- |\n|  | 2 | Jan | 2013 |\n|  | 2 | Dec | 2013 |\n|  | 2 | Jan | 2014 |\n|  | 2 | Jul | 2014 |\n|  | 23 | Jan | 2015 |\n|  | 3 | Jan | 2016 |\n|  | 1 | Oct | 2016 |\n|  | 2 | Oct | 2016 |\n|  | 2 | Jan | 2021 |\n|  | 1 | Feb | 2021 |\n|  | 31 | Dec | 2021 |\n|  | 1 | Apr | 2022 |\n|  | 1 | Oct | 2022 |\n\n# Search within Legislation\n\n|  |\n\n| Limitation of purpose and extent |",
+          "score": 0.64719695,
+          "published_date": ""
+        }
+      ],
+      "amendment_analysis": {
+        "has_amendments": false,
+        "confidence": 0.78,
+        "summary": "The 2020 Revised Edition of the Personal Data Protection Act 2012 incorporates all amendments up to 1\u202fDecember\u202f2021 (effective 31\u202fDecember\u202f2021). Subsequent amendment dates (April\u202f2022, October\u202f2022) are recorded for the Act overall, but the text of section\u202f18 remains unchanged in the available sources. No specific amendment to s\u202f18 is identified.",
+        "key_changes": [],
+        "amendment_dates": [
+          "1\u202fDecember\u202f2021 (latest incorporated amendment in the 2020 Revised Edition)",
+          "April\u202f2022 (subsequent amendment to the Act, not to s\u202f18)",
+          "October\u202f2022 (subsequent amendment to the Act, not to s\u202f18)"
+        ],
+        "sources": [
+          "https://sso.agc.gov.sg/Act/PDPA2012 (Result\u202f1 \u2013 amendment timeline and note that the 2020 revised edition incorporates amendments up to 1\u202fDec\u202f2021)",
+          "https://sso.agc.gov.sg/Act/PDPA2012?ProvIds=pr18- (Result\u202f3 \u2013 current wording of s\u202f18 and amendment timeline)"
+        ]
+      },
+      "search_timestamp": "2025-09-13T17:05:01.098465"
+    },
+    {
+      "statute": "Personal Data Protection Act 2012 (2020 Rev Ed) s 24",
+      "search_query": "Singapore Personal Data Protection Act 2012 (2020 Rev Ed) s 24 amendment changed updated recent",
+      "total_results": 3,
+      "search_results": [
+        {
+          "title": "Personal Data Protection Act 2012 - Singapore Statutes Online",
+          "url": "https://sso.agc.gov.sg/Act/PDPA2012",
+          "content": "|  |  |  |  |\n ---  --- |\n|  | 2 | Jan | 2013 |\n|  | 2 | Dec | 2013 |\n|  | 2 | Jan | 2014 |\n|  | 2 | Jul | 2014 |\n|  | 23 | Jan | 2015 |\n|  | 3 | Jan | 2016 |\n|  | 1 | Oct | 2016 |\n|  | 2 | Oct | 2016 |\n|  | 2 | Jan | 2021 |\n|  | 1 | Feb | 2021 |\n|  | 31 | Dec | 2021 |\n|  | 1 | Apr | 2022 |\n|  | 1 | Oct | 2022 |\n\n# Search within Legislation\n\n|  |\n\n| Personal Data Protection  Act 2012 |\n\n|  |\n\n| 2020 REVISED EDITION |\n\n|  | [...] | This revised edition incorporates all amendments up to and including 1 December 2021 and comes into operation on 31 December 2021 |\n\n|  |\n\n| An Act to govern the collection, use and disclosure of personal data by organisations, and to establish the Do Not Call Register and to provide for its administration, and for matters connected therewith. [22/2016] |\n\n|  | [...] | (2)  Parts 3, 4, 5, 6 (except sections 24 and 25), 6A (except sections 26C(3)(a) and 26E) and 6B do not impose any obligation on a data intermediary in respect of its processing of personal data on behalf of and for the purposes of another organisation pursuant to a contract which is evidenced or made in writing. [40/2020] |\n\n|  |",
+          "score": 0.7593865,
+          "published_date": ""
+        },
+        {
+          "title": "Personal Data Protection Act 2012 - Singapore Statutes Online",
+          "url": "https://sso.agc.gov.sg/Act/PDPA2012?ProvIds=pr24-",
+          "content": "|  |  |  |  |  |\n ---  --- \n| 24.  An organisation must protect personal data in its possession or under its control by making reasonable security arrangements to prevent \u2014  |  |  |  --- | | (a) | unauthorised access, collection, use, disclosure, copying, modification or disposal, or similar risks; and | | (b) | the loss of any storage medium or device on which personal data is stored. [40/2020] | | [...] |  |  |\n --- |\n| (a) | unauthorised access, collection, use, disclosure, copying, modification or disposal, or similar risks; and |\n| (b) | the loss of any storage medium or device on which personal data is stored. [40/2020] | [...] |  |  |  |  |\n ---  --- |\n|  | 2 | Jan | 2013 |\n|  | 2 | Dec | 2013 |\n|  | 2 | Jan | 2014 |\n|  | 2 | Jul | 2014 |\n|  | 23 | Jan | 2015 |\n|  | 3 | Jan | 2016 |\n|  | 1 | Oct | 2016 |\n|  | 2 | Oct | 2016 |\n|  | 2 | Jan | 2021 |\n|  | 1 | Feb | 2021 |\n|  | 31 | Dec | 2021 |\n|  | 1 | Apr | 2022 |\n|  | 1 | Oct | 2022 |\n\n# Search within Legislation\n\n|  |\n\n| Protection of personal data |",
+          "score": 0.7361925,
+          "published_date": ""
+        },
+        {
+          "title": "Personal Data Protection Act 2012 - Singapore Statutes Online",
+          "url": "https://sso.agc.gov.sg/Act/PDPA2012?ProvIds=P16-",
+          "content": "|  |  |  |  |  |\n ---  --- \n| 24.  An organisation must protect personal data in its possession or under its control by making reasonable security arrangements to prevent \u2014  |  |  |  --- | | (a) | unauthorised access, collection, use, disclosure, copying, modification or disposal, or similar risks; and | | (b) | the loss of any storage medium or device on which personal data is stored. [40/2020] | | [...] another organisation. | |  |  |  | Protection of personal data |  |  |  |  |  |  |  ---  ---  | 24.  An organisation must protect personal data in its possession or under its control by making reasonable security arrangements to prevent \u2014  |  |  |  --- | | (a) | unauthorised access, collection, use, disclosure, copying, modification or disposal, or similar risks; and | | (b) | the loss of any storage medium or device on which personal data is stored. [40/2020] | |  |  |  | Retention of personal [...] |  |  |  |  |  |\n ---  --- \n| 25.  An organisation must cease to retain its documents containing personal data, or remove the means by which the personal data can be associated with particular individuals, as soon as it is reasonable to assume that \u2014  |  |  |  --- | | (a) | the purpose for which that personal data was collected is no longer being served by retention of the personal data; and | | (b) | retention is no longer necessary for legal or business purposes. | |",
+          "score": 0.7361925,
+          "published_date": ""
+        }
+      ],
+      "amendment_analysis": {
+        "has_amendments": true,
+        "confidence": 0.85,
+        "summary": "Section 24 of the Personal Data Protection Act 2012 was amended in 2020 (Amendment Bill 40/2020). The amendment introduced an additional security obligation concerning the loss of storage media or devices. The 2020 revised edition of the Act incorporates this change and all amendments up to 31\u202fDecember\u202f2021.",
+        "key_changes": [
+          "Addition of clause (b) requiring organisations to protect personal data against loss of any storage medium or device on which the data is stored (introduced by Amendment 40/2020)."
+        ],
+        "amendment_dates": [
+          "2020 (Amendment Bill 40/2020)",
+          "Effective in the 2020 Revised Edition (operational from 31\u202fDecember\u202f2021)"
+        ],
+        "sources": [
+          "https://sso.agc.gov.sg/Act/PDPA2012?ProvIds=pr24-",
+          "https://sso.agc.gov.sg/Act/PDPA2012?ProvIds=P16-"
+        ]
+      },
+      "search_timestamp": "2025-09-13T17:05:07.343645"
+    },
+    {
+      "statute": "Personal Data Protection Act 2012 (2020 Rev Ed) s 26A\u201326E",
+      "search_query": "Singapore Personal Data Protection Act 2012 (2020 Rev Ed) s 26A\u201326E amendment changed updated recent",
+      "total_results": 3,
+      "search_results": [
+        {
+          "title": "Personal Data Protection Act 2012 - Singapore Statutes Online",
+          "url": "https://sso.agc.gov.sg/Act/PDPA2012",
+          "content": "|  |  |  |  |\n ---  --- |\n|  | 2 | Jan | 2013 |\n|  | 2 | Dec | 2013 |\n|  | 2 | Jan | 2014 |\n|  | 2 | Jul | 2014 |\n|  | 23 | Jan | 2015 |\n|  | 3 | Jan | 2016 |\n|  | 1 | Oct | 2016 |\n|  | 2 | Oct | 2016 |\n|  | 2 | Jan | 2021 |\n|  | 1 | Feb | 2021 |\n|  | 31 | Dec | 2021 |\n|  | 1 | Apr | 2022 |\n|  | 1 | Oct | 2022 |\n\n# Search within Legislation\n\n|  |\n\n| Personal Data Protection  Act 2012 |\n\n|  |\n\n| 2020 REVISED EDITION |\n\n|  | [...] | This revised edition incorporates all amendments up to and including 1 December 2021 and comes into operation on 31 December 2021 |\n\n|  |\n\n| An Act to govern the collection, use and disclosure of personal data by organisations, and to establish the Do Not Call Register and to provide for its administration, and for matters connected therewith. [22/2016] |\n\n|  | [...] | (2)  Parts 3, 4, 5, 6 (except sections 24 and 25), 6A (except sections 26C(3)(a) and 26E) and 6B do not impose any obligation on a data intermediary in respect of its processing of personal data on behalf of and for the purposes of another organisation pursuant to a contract which is evidenced or made in writing. [40/2020] |\n\n|  |",
+          "score": 0.7803451,
+          "published_date": ""
+        },
+        {
+          "title": "Personal Data Protection (Amendment) Bill",
+          "url": "https://www.parliament.gov.sg/docs/default-source/default-document-library/personal-data-protection-(amendment)-bill-37-2020.pdf",
+          "content": "26 Amendment of section 48 21. Section 48 of the principal Act is amended by deleting subsections (2) and (3) and substituting the following subsections: \u201c(2) Section 43(1) or 44 does not apply to an employee (X) 5 who sends a specified message addressed to a Singapore telephone number in good faith \u2014 (a) in the course of X\u2019s employment; or (b) in accordance with instructions given to X by or on behalf of X\u2019s employer in the course of X\u2019s 10 employment. [...] 5 New Part VIB 14. The principal Act, as amended by section 13, is amended by inserting, immediately after section 26E, the following Part: \u201cPART VIB DATA PORTABILITY 10 Interpretation and application of this Part 26F.\u2014(1) In this Part, unless the context otherwise requires \u2014 \u201capplicable country\u201d means a country or territory outside Singapore that is prescribed to be an applicable country; \u201capplicable data\u201d, in relation to a porting organisation, 15 means any personal data in the possession or [...] 10 New Part VIA 13. The principal Act is amended by inserting, immediately after section 26, the following Part: \u201cPART VIA NOTIFICATION OF DATA BREACHES 15 Interpretation of this Part 26A. In this Part, unless the context otherwise requires \u2014 \u201caffected individual\u201d means any individual to whom any personal data affected by a data breach relates; \u201cdata breach\u201d, in relation to personal data, means \u2014 20 (a) the unauthorised access, collection, use, disclosure, copying, modification or disposal of",
+          "score": 0.60133666,
+          "published_date": ""
+        },
+        {
+          "title": "Personal Data Protection Act 2012 - Singapore Statutes Online",
+          "url": "https://sso.agc.gov.sg/Act/PDPA2012?ProvIds=pr26-",
+          "content": "| 26.\u2014(1)  An organisation must not transfer any personal data to a country or territory outside Singapore except in accordance with requirements prescribed under this Act to ensure that organisations provide a standard of protection to personal data so transferred that is comparable to the protection under this Act.  |  |  | (2)  The Commission may, on the application of any organisation, by written notice exempt the organisation from any requirement prescribed pursuant to subsection (1) in",
+          "score": 0.5996498,
+          "published_date": ""
+        }
+      ],
+      "amendment_analysis": {
+        "has_amendments": true,
+        "confidence": 0.78,
+        "summary": "Official sources show that the PDPA 2012 (2020 Revised Edition) incorporates amendments up to 1\u202fDecember\u202f2021 and that subsequent legislative activity (e.g., Bill 37 of 2020) introduced a new Part VIB on Data Portability immediately after section\u202f26E. The revised edition also notes specific amendments to sections\u202f26C(3)(a) and\u202f26E, confirming recent changes to the provisions covering sections\u202f26A\u201326E.",
+        "key_changes": [
+          "Insertion of Part VIB (Data Portability) immediately after section\u202f26E, creating new obligations and definitions related to data porting.",
+          "Amendment to section\u202f26C(3)(a) \u2013 specific wording changed (details in the 2020 amendment bill).",
+          "Amendment to section\u202f26E \u2013 revised provisions (details in the 2020 amendment bill).",
+          "Inclusion of all amendments up to 1\u202fDecember\u202f2021 in the 2020 Revised Edition, effective 31\u202fDecember\u202f2021."
+        ],
+        "amendment_dates": [
+          "2020 (Bill 37 \u2013 Personal Data Protection (Amendment) Bill)",
+          "1 December 2021 (effective date of the 2020 Revised Edition incorporating amendments)",
+          "October 2022 (latest amendment listed on the SSO page)"
+        ],
+        "sources": [
+          "https://sso.agc.gov.sg/Act/PDPA2012 (2020 Revised Edition notes \u2013 incorporates amendments up to 1\u202fDec\u202f2021, effective 31\u202fDec\u202f2021)",
+          "https://www.parliament.gov.sg/docs/default-source/default-document-library/personal-data-protection-(amendment)-bill-37-2020.pdf (Bill 37 of 2020 inserting Part VIB after section\u202f26E)",
+          "https://sso.agc.gov.sg/Act/PDPA2012?ProvIds=pr26- (section\u202f26 text and amendment references)"
+        ]
+      },
+      "search_timestamp": "2025-09-13T17:05:15.537922"
+    }
+  ],
+  "timestamp": "2025-09-13T17:05:15.538042"
+}
