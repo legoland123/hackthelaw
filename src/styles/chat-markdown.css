@@ -1,0 +1,31 @@
+/* src/styles/chat-markdown.css */
+.md-body { line-height: 1.6; color: var(--text-primary); }
+.md-body p { margin: 6px 0; }
+.md-body h3, .md-body h4, .md-body h5 { margin: 8px 0 6px; line-height: 1.25; }
+.md-body ul, .md-body ol { margin: 6px 0; padding-left: 1.25rem; }
+.md-body blockquote {
+  margin: 8px 0; padding: 8px 12px; border-left: 3px solid var(--secondary-color);
+  background: #0f172a; border-radius: 8px; color: var(--text-secondary);
+}
+.md-body code {
+  background: #0b1220; border: 1px solid var(--border-color);
+  border-radius: 6px; padding: 2px 6px; font-family: ui-monospace, Menlo, Consolas, monospace;
+}
+.md-body .md-pre {
+  background: #0b1220; border: 1px solid var(--border-color);
+  border-radius: 10px; padding: 10px 12px; overflow: auto; margin: 8px 0;
+}
+.md-body table.md-table { width: 100%; border-collapse: collapse; margin: 8px 0; }
+.md-body table.md-table th, .md-body table.md-table td {
+  border: 1px solid var(--border-color); padding: 8px 10px; vertical-align: top; text-align: left;
+}
+.md-body table.md-table th { background: var(--surface-elevated); font-weight: 600; }
+.md-body a { color: var(--secondary-color); text-decoration: none; border-bottom: 1px dashed rgba(21,163,163,.35); }
+.md-body a:hover { text-decoration: underline; border-bottom-color: transparent; }
+
+/* doc reference "links" rendered as buttons */
+.doc-ref-link {
+  background: transparent; color: var(--secondary-color); border: 1px dashed rgba(21,163,163,.35);
+  border-radius: 8px; padding: 2px 8px; cursor: pointer;
+}
+.doc-ref-link:hover { background: rgba(21,163,163,.08); }
