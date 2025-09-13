@@ -2,9 +2,11 @@
 elitigation_search.py - eLitigation case search service
 """
 
+import json
 import logging
 import os
 from datetime import datetime
+from pydoc import cli
 from typing import List, Dict, Optional
 from fastapi import HTTPException
 from pydantic import BaseModel
@@ -133,8 +135,15 @@ def scrape_case_content(url: str, client: TavilyClient) -> Optional[str]:
     try:
         logger.info(f"📄 Scraping case content from: {url}")
         
-        # Use Tavily to extract content from the specific URL
-        response = client.extract(urls=[url])
+        # remove pdf / from url or ends with /pdf
+        if '/pdf/' in url or url.endswith('.pdf') or url.endswith('/pdf'):
+            # remove the pdf part
+            url = url.split('/pdf')[0]
+            url = url.rstrip('/')
+
+        # Use Tavily to extract content from the specific URL, only for that page
+        response = client.crawl(url=url, max_breadth=1)['results']
+        
         
         if response and len(response) > 0:
             content = response[0].get('raw_content', '')
@@ -222,8 +231,14 @@ def search_and_scrape_elitigation_cases(request: ELitigationEnhancedRequest) -> 
         )
         
         # Use the existing search function to get initial results
-        initial_results = search_elitigation_cases(basic_request)
-        
+        if True: # hackathon override
+            # sleep awhile and log
+            logger.info("⏳ Simulating initial search delay...")
+            asyncio.sleep(1)  # Simulate delay
+            initial_results = json.load(open("legal_services/elitigation_initial_results.json"))
+        else:
+            initial_results = search_elitigation_cases(basic_request)
+
         if initial_results.get('status') != 'success' or not initial_results.get('cases'):
             return initial_results
         
