@@ -336,6 +336,75 @@ async def vector_search_textbooks(request: VectorSearchRequest):
         logger.error(f"Vector search failed: {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
+def _create_case_relevance_visualization(ranked_cases: List[Dict]) -> str:
+    """
+    Create a visual representation of ranked eLitigation cases with relevance scores
+    
+    Args:
+        ranked_cases: List of cases with relevance scores
+        
+    Returns:
+        Formatted string with case relevance visualization
+    """
+    if not ranked_cases:
+        return ""
+    
+    visualization = "\n\n---\n\n## 📋 **Relevant Case Law Analysis**\n\n"
+    visualization += "*Based on AI-powered relevance ranking considering statutory citations, factual similarity, and judicial precedence.*\n\n"
+    
+    for i, case in enumerate(ranked_cases[:5]):  # Show top 5 cases
+        score = case.get('relevance_score', 0)
+        title = case.get('title', 'Unknown Case')
+        url = case.get('url', '#')
+        
+        # Create visual relevance bar
+        score_percentage = min(int(score * 100), 100)
+        filled_bars = "█" * (score_percentage // 10)
+        empty_bars = "░" * (10 - (score_percentage // 10))
+        relevance_bar = f"{filled_bars}{empty_bars}"
+        
+        # Determine relevance level
+        if score >= 0.8:
+            relevance_level = "🔥 **Highly Relevant**"
+            color_indicator = "🟢"
+        elif score >= 0.6:
+            relevance_level = "⚡ **Very Relevant**"
+            color_indicator = "🟡"
+        elif score >= 0.4:
+            relevance_level = "📊 **Moderately Relevant**"
+            color_indicator = "🟠"
+        else:
+            relevance_level = "📋 **Somewhat Relevant**"
+            color_indicator = "🔴"
+        
+        visualization += f"### {i+1}. {color_indicator} [{title}]({url})\n\n"
+        visualization += f"**Relevance Score:** `{score:.3f}` {relevance_level}\n\n"
+        visualization += f"**Visual Score:** `{relevance_bar}` ({score_percentage}%)\n\n"
+        
+        # Add case details if available
+        if case.get('summary'):
+            summary = case['summary'][:200] + "..." if len(case.get('summary', '')) > 200 else case.get('summary', '')
+            visualization += f"**Case Summary:** {summary}\n\n"
+        
+        # Add statute citations if available
+        statute_citations = case.get('statute_citations', [])
+        if statute_citations:
+            citations_text = ", ".join(statute_citations[:3])  # Show first 3 citations
+            if len(statute_citations) > 3:
+                citations_text += f" (+{len(statute_citations) - 3} more)"
+            visualization += f"**Key Statutes:** {citations_text}\n\n"
+        
+        visualization += "---\n\n"
+    
+    # Add footer note
+    total_cases = len(ranked_cases)
+    if total_cases > 5:
+        visualization += f"*Showing top 5 of {total_cases} relevant cases found.*\n\n"
+    
+    visualization += "💡 **Note:** Relevance scores are calculated using advanced AI analysis considering multiple factors including statutory alignment, factual similarity, and precedential value.\n\n"
+    
+    return visualization
+
 @app.post("/chat")
 async def chat_with_legal_mind(request: ChatRequest):
     """
@@ -466,6 +535,47 @@ async def chat_with_legal_mind(request: ChatRequest):
                                 # Log if we got scraped content
                                 scraped_count = sum(1 for case in elitigation_results.get('cases', []) if case.get('full_content'))
                                 logger.info(f"📄 Successfully scraped content from {scraped_count} cases")
+                                
+                                # Step 3: Apply advanced relevance ranking
+                                logger.info("🎯 Applying Step 3: Advanced Relevance Scoring...")
+                                
+                                try:
+                                    from legal_services.case_ranking import rank_elitigation_cases, extract_query_facts
+                                    
+                                    # Extract query facts for better ranking
+                                    query_facts = extract_query_facts(message)
+                                    logger.info(f"📋 Extracted facts from query: {query_facts}")
+                                    
+                                    # Extract statute names for ranking
+                                    target_statutes = [stat.get('name and section', '') for stat in statute_search_results.get('statutes', [])]
+                                    
+                                    # Apply multi-factor ranking
+                                    ranked_cases = rank_elitigation_cases(
+                                        cases=elitigation_results.get('cases', []),
+                                        query=message,
+                                        target_statutes=target_statutes,
+                                        query_facts=query_facts
+                                    )
+                                    
+                                    # Update results with ranked cases
+                                    elitigation_results['cases'] = ranked_cases
+                                    elitigation_results['ranking_applied'] = True
+                                    
+                                    # Log ranking results
+                                    if ranked_cases:
+                                        top_score = ranked_cases[0].get('relevance_score', 0)
+                                        avg_score = sum(case.get('relevance_score', 0) for case in ranked_cases) / len(ranked_cases)
+                                        logger.info(f"🏆 Ranking complete - Top score: {top_score:.3f}, Average: {avg_score:.3f}")
+                                        
+                                        # Log top 3 cases with scores
+                                        for i, case in enumerate(ranked_cases[:3]):
+                                            score = case.get('relevance_score', 0)
+                                            title = case.get('title', '')[:50] + '...'
+                                            logger.info(f"  #{i+1}: {title} (Score: {score:.3f})")
+                                    
+                                except Exception as ranking_error:
+                                    logger.warning(f"Relevance ranking failed: {ranking_error}")
+                                    # Continue without ranking if it fails
 
                         else:
                             elitigation_results = None
@@ -490,6 +600,13 @@ async def chat_with_legal_mind(request: ChatRequest):
         # Generate response using LLM
         try:
             response = await llm_processor._generate_with_retry(conversation_context)
+            
+            # Enhance response with ranked cases visualization if available
+            if 'elitigation_results' in locals() and elitigation_results and elitigation_results.get('status') == 'success':
+                ranked_cases = elitigation_results.get('cases', [])
+                if ranked_cases and elitigation_results.get('ranking_applied', False):
+                    case_visualization = _create_case_relevance_visualization(ranked_cases)
+                    response = response + "\n\n" + case_visualization
             
             # Store conversation in database if user_id is provided
             if request.user_id and request.user_id != "anonymous":
