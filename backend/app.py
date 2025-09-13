@@ -22,6 +22,11 @@ from groqFunc.diff_to_semantics import main as groq_find_semantics
 # Load environment variables from .env file
 load_dotenv()
 
+from conversation.context_builder import (
+    create_comprehensive_conversation_context,
+    create_case_relevance_visualization,
+    ChatMessage
+)
 from legal_memory.legal_scraper import EnhancedLegalScraper
 from legal_memory.llm_processor import LLMProcessor
 from firebase.db import get_firestore_db
@@ -228,11 +233,6 @@ class SearchRequest(BaseModel):
     user_id: Optional[str] = "anonymous"
     doc_id: Optional[str] = None  # Document ID for storing in conflicts collection
 
-class ChatMessage(BaseModel):
-    role: str  # "user" or "assistant"
-    content: str
-    timestamp: Optional[str] = None
-
 class ChatRequest(BaseModel):
     message: str
     conversation_history: Optional[List[ChatMessage]] = []
@@ -335,75 +335,6 @@ async def vector_search_textbooks(request: VectorSearchRequest):
     except Exception as e:
         logger.error(f"Vector search failed: {e}")
         raise HTTPException(status_code=500, detail=str(e))
-
-def _create_case_relevance_visualization(ranked_cases: List[Dict]) -> str:
-    """
-    Create a visual representation of ranked eLitigation cases with relevance scores
-    
-    Args:
-        ranked_cases: List of cases with relevance scores
-        
-    Returns:
-        Formatted string with case relevance visualization
-    """
-    if not ranked_cases:
-        return ""
-    
-    visualization = "\n\n---\n\n## 📋 **Relevant Case Law Analysis**\n\n"
-    visualization += "*Based on AI-powered relevance ranking considering statutory citations, factual similarity, and judicial precedence.*\n\n"
-    
-    for i, case in enumerate(ranked_cases[:5]):  # Show top 5 cases
-        score = case.get('relevance_score', 0)
-        title = case.get('title', 'Unknown Case')
-        url = case.get('url', '#')
-        
-        # Create visual relevance bar
-        score_percentage = min(int(score * 100), 100)
-        filled_bars = "█" * (score_percentage // 10)
-        empty_bars = "░" * (10 - (score_percentage // 10))
-        relevance_bar = f"{filled_bars}{empty_bars}"
-        
-        # Determine relevance level
-        if score >= 0.8:
-            relevance_level = "🔥 **Highly Relevant**"
-            color_indicator = "🟢"
-        elif score >= 0.6:
-            relevance_level = "⚡ **Very Relevant**"
-            color_indicator = "🟡"
-        elif score >= 0.4:
-            relevance_level = "📊 **Moderately Relevant**"
-            color_indicator = "🟠"
-        else:
-            relevance_level = "📋 **Somewhat Relevant**"
-            color_indicator = "🔴"
-        
-        visualization += f"### {i+1}. {color_indicator} [{title}]({url})\n\n"
-        visualization += f"**Relevance Score:** `{score:.3f}` {relevance_level}\n\n"
-        visualization += f"**Visual Score:** `{relevance_bar}` ({score_percentage}%)\n\n"
-        
-        # Add case details if available
-        if case.get('summary'):
-            summary = case['summary'][:200] + "..." if len(case.get('summary', '')) > 200 else case.get('summary', '')
-            visualization += f"**Case Summary:** {summary}\n\n"
-        
-        # Add statute citations if available
-        statute_citations = case.get('statute_citations', [])
-        if statute_citations:
-            citations_text = ", ".join(statute_citations[:3])  # Show first 3 citations
-            if len(statute_citations) > 3:
-                citations_text += f" (+{len(statute_citations) - 3} more)"
-            visualization += f"**Key Statutes:** {citations_text}\n\n"
-        
-        visualization += "---\n\n"
-    
-    # Add footer note
-    total_cases = len(ranked_cases)
-    if total_cases > 5:
-        visualization += f"*Showing top 5 of {total_cases} relevant cases found.*\n\n"
-    
-    visualization += "💡 **Note:** Relevance scores are calculated using advanced AI analysis considering multiple factors including statutory alignment, factual similarity, and precedential value.\n\n"
-    
-    return visualization
 
 @app.post("/chat")
 async def chat_with_legal_mind(request: ChatRequest):
@@ -588,7 +519,7 @@ async def chat_with_legal_mind(request: ChatRequest):
             # Continue with chat even if statute search fails
         
         # Create enhanced conversation context with statute, amendment, and case information
-        conversation_context = _create_comprehensive_conversation_context(
+        conversation_context = create_comprehensive_conversation_context(
             request.conversation_history,
             message,
             request.project_context,
@@ -605,7 +536,7 @@ async def chat_with_legal_mind(request: ChatRequest):
             if 'elitigation_results' in locals() and elitigation_results and elitigation_results.get('status') == 'success':
                 ranked_cases = elitigation_results.get('cases', [])
                 if ranked_cases and elitigation_results.get('ranking_applied', False):
-                    case_visualization = _create_case_relevance_visualization(ranked_cases)
+                    case_visualization = create_case_relevance_visualization(ranked_cases)
                     response = response + "\n\n" + case_visualization
             
             # Store conversation in database if user_id is provided
@@ -949,7 +880,7 @@ async def upload_legal_content(proj_id: str, doc_id: str):
     # Extract semantics from differences and perform legal search
     try:
         semantics_result = groq_find_semantics(differences_in_clauses)
-        logger.info(f"Successfully extracted semantics from differences")
+        logger.info("Successfully extracted semantics from differences")
         
         # Parse the semantics result
         semantics_data = json.loads(semantics_result)
@@ -1022,205 +953,6 @@ async def upload_legal_content(proj_id: str, doc_id: str):
             "search_results_count": len(search_results)
         }
     }
-
-def _create_conversation_context(conversation_history: List[ChatMessage], current_message: str, project_context: Optional[Dict] = None) -> str:
-    """Create conversation context for Gemini"""
-    
-    # System prompt for LIT Legal Mind
-    system_prompt = """You are LIT Legal Mind, an expert AI legal assistant designed for legal professionals. You specialize in Singapore law and complex legal document analysis.
-
-Your capabilities include:
-- In-depth contract analysis and review
-- Advanced legal research and case analysis
-- Document version control and conflict resolution
-- Nuanced understanding of the Singapore legal system
-- Legal document drafting assistance
-
-Guidelines:
-- Provide accurate, insightful, and concise legal information.
-- Assume you are communicating with a legal professional.
-- Focus on Singapore law when relevant.
-- When project context is provided, reference specific documents and their content.
-- To refer to a document, use the format `[[Document X]]`. The UI will turn this into a clickable link. For example, a reference to the first document in the context would be `[[Document 1]]`. Do not add any other information like title or ID.
-
-Formatting Guidelines:
-- Use bullet points (•) for lists and key points.
-- Use **bold text** for important legal terms, concepts, and emphasis.
-- Use clear line breaks to separate different sections.
-- Structure responses with clear headings when appropriate.
-- Keep paragraphs short and readable.
-
-Example of a good response:
-As stated in [[Document 1]], the payment terms are defined in section 3.2. However, [[Document 2]] suggests a revised payment schedule.
-
-Current conversation context:"""
-
-    # Build conversation history
-    conversation_text = system_prompt + "\n\n"
-    
-    if conversation_history:
-        for msg in conversation_history[-5:]:  # Keep last 5 messages for context
-            role = "User" if msg.role == "user" else "LIT Legal Mind"
-            conversation_text += f"{role}: {msg.content}\n\n"
-    
-    # Add project context if available
-    if project_context:
-        conversation_text += "PROJECT CONTEXT:\n"
-        if project_context.get('project_name'):
-            conversation_text += f"Project: {project_context['project_name']}\n"
-        if project_context.get('project_description'):
-            conversation_text += f"Description: {project_context['project_description']}\n"
-        
-        if project_context.get('documents') and len(project_context['documents']) > 0:
-            conversation_text += f"\nPROJECT DOCUMENTS ({len(project_context['documents'])} documents):\n"
-            for i, doc in enumerate(project_context['documents'], 1):
-                conversation_text += f"\nDocument {i} (ID: {doc.get('id', 'unknown')}): {doc.get('title', 'Untitled')}\n"
-                conversation_text += f"Version: {doc.get('version', 'Unknown')}\n"
-                conversation_text += f"Author: {doc.get('author', 'Unknown')}\n"
-                if doc.get('description'):
-                    conversation_text += f"Description: {doc['description']}\n"
-                if doc.get('content'):
-                    # Truncate content to avoid token limits
-                    content = doc['content'][:2000] + "..." if len(doc['content']) > 2000 else doc['content']
-                    conversation_text += f"Content: {content}\n"
-                if doc.get('changes'):
-                    changes = ", ".join(doc['changes'])
-                    conversation_text += f"Key Changes: {changes}\n"
-                conversation_text += "-" * 50 + "\n"
-        
-        conversation_text += "\n"
-    
-    # Add current message
-    conversation_text += f"User: {current_message}\n\nLIT Legal Mind:"
-    
-    return conversation_text
-
-def _create_enhanced_conversation_context(
-    conversation_history: List[ChatMessage], 
-    current_message: str, 
-    project_context: Optional[Dict] = None,
-    statute_search_results: Optional[Dict] = None,
-    amendment_search_results: Optional[Dict] = None
-) -> str:
-    """Create enhanced conversation context with statute and amendment information"""
-    
-    # Start with the base conversation context
-    conversation_text = _create_conversation_context(conversation_history, current_message, project_context)
-    
-    # Add statute search results if available
-    if statute_search_results and statute_search_results.get('status') == 'success':
-        statutes = statute_search_results.get('statutes', [])
-        if statutes:
-            conversation_text += "\n\n**RELEVANT STATUTES FOUND:**\n"
-            for i, statute in enumerate(statutes, 1):
-                conversation_text += f"\n{i}. **{statute.get('name', 'Unknown Statute')}**\n"
-                if statute.get('chapter'):
-                    conversation_text += f"   Chapter: {statute['chapter']}\n"
-                if statute.get('relevance'):
-                    conversation_text += f"   Relevance: {statute['relevance']}\n"
-                if statute.get('key_sections'):
-                    sections = ", ".join(statute['key_sections'])
-                    conversation_text += f"   Key Sections: {sections}\n"
-                if statute.get('summary'):
-                    conversation_text += f"   Summary: {statute['summary']}\n"
-                conversation_text += "\n"
-            
-            if statute_search_results.get('reasoning'):
-                conversation_text += f"**Legal Framework Analysis:** {statute_search_results['reasoning']}\n"
-    
-    # Add amendment search results if available
-    if amendment_search_results and amendment_search_results.get('status') == 'success':
-        amendment_results = amendment_search_results.get('results', [])
-        amendments_found = [r for r in amendment_results if r.get('amendment_analysis', {}).get('has_amendments', False)]
-        
-        if amendments_found:
-            conversation_text += "\n\n**RECENT AMENDMENTS FOUND:**\n"
-            for result in amendments_found:
-                statute_name = result.get('statute', 'Unknown Statute')
-                analysis = result.get('amendment_analysis', {})
-                conversation_text += f"\n**{statute_name}** (Confidence: {analysis.get('confidence', 0.0):.1f})\n"
-                if analysis.get('summary'):
-                    conversation_text += f"   Amendment Summary: {analysis['summary']}\n"
-                if analysis.get('key_changes'):
-                    changes = "\n   • ".join(analysis['key_changes'])
-                    conversation_text += f"   Key Changes:\n   • {changes}\n"
-                if analysis.get('amendment_dates'):
-                    dates = ", ".join(analysis['amendment_dates'])
-                    conversation_text += f"   Amendment Dates: {dates}\n"
-                conversation_text += "\n"
-        else:
-            # Mention that no recent amendments were found for the relevant statutes
-            conversation_text += "\n\n**AMENDMENT STATUS:** No recent amendments found for the identified statutes.\n"
-    
-    conversation_text += "\n**INSTRUCTIONS:** Use the above statute and amendment information to provide accurate, up-to-date legal guidance. Reference specific statutes and their current status in your response.\n"
-    
-    return conversation_text
-
-def _create_comprehensive_conversation_context(
-    conversation_history: List[ChatMessage], 
-    current_message: str, 
-    project_context: Optional[Dict] = None,
-    statute_search_results: Optional[Dict] = None,
-    amendment_search_results: Optional[Dict] = None,
-    elitigation_results: Optional[Dict] = None
-) -> str:
-    """Create comprehensive conversation context with statutes, amendments, and case law"""
-    
-    # Start with the enhanced context (statutes + amendments)
-    conversation_text = _create_enhanced_conversation_context(
-        conversation_history, 
-        current_message, 
-        project_context,
-        statute_search_results,
-        amendment_search_results
-    )
-    
-    # Add eLitigation case results if available
-    if elitigation_results and elitigation_results.get('status') == 'success':
-        cases = elitigation_results.get('cases', [])
-        
-        if cases:
-            conversation_text += "\n\n**RELEVANT CASE LAW:**\n"
-            conversation_text += "The following Singapore court cases are relevant to your query:\n\n"
-            
-            for i, case in enumerate(cases, 1):
-                title = case.get('title', 'Unknown Case')
-                court = case.get('court', '')
-                year = case.get('case_year', '')
-                url = case.get('url', '')
-                snippet = case.get('snippet', '')
-                full_content = case.get('full_content', '')
-                
-                # Case header
-                conversation_text += f"**Case {i}: {title}**\n"
-                if court:
-                    conversation_text += f"   Court: {court}\n"
-                if year:
-                    conversation_text += f"   Year: {year}\n"
-                if url:
-                    conversation_text += f"   URL: {url}\n"
-                
-                # Case content - prioritize full content over snippet
-                if full_content and len(full_content.strip()) > 100:
-                    conversation_text += f"   **Full Case Content:**\n   {full_content}\n\n"
-                elif snippet:
-                    conversation_text += f"   **Summary:** {snippet}\n\n"
-                
-                # Add separator between cases
-                if i < len(cases):
-                    conversation_text += "---\n\n"
-            
-            conversation_text += "\n**CASE LAW ANALYSIS INSTRUCTIONS:** "
-            conversation_text += "Use the above case law to support your legal analysis. "
-            conversation_text += "Reference specific cases, their holdings, and how they apply to the current query. "
-            conversation_text += "Consider the court hierarchy and precedential value.\n"
-    
-    conversation_text += "\n**COMPREHENSIVE LEGAL GUIDANCE:** "
-    conversation_text += "You now have access to relevant statutes, recent amendments, and case law. "
-    conversation_text += "Provide a comprehensive legal analysis that integrates all available sources. "
-    conversation_text += "Structure your response to address statutory requirements, recent changes, and judicial interpretations.\n"
-    
-    return conversation_text
 
 def convert_to_html(results_data: Dict, source: str) -> str:
     """Convert search results to HTML for LLM processing"""
@@ -1309,12 +1041,6 @@ async def process_document_for_vector_search(request: DocumentProcessingRequest)
             vector_store = get_vector_store()
             res = vector_store.add_vectors(vector_data)
             staged_gcs_uri = res.get("staged_gcs_uri") if isinstance(res, dict) else None
-
-           
-            #success = vector_store.add_vectors(vector_data)
-                       #
-                       #if not success:
-                       #    raise HTTPException(status_code=500, detail="Failed to add vectors to index")
 
                        # Store chunk metadata in Firestore
             for i, chunk in enumerate(chunks):
